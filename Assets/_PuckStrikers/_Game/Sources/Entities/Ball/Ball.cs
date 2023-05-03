@@ -8,20 +8,19 @@ namespace Masomo.Game.Entity
     
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
-    [RequireComponent(typeof(TrailRenderer))]//TODO: use particle instead of trail renderer
+   
     public class Ball : MonoBehaviour
     {
         private Rigidbody _rigidbody;
         private SphereCollider _collider;
-        private TrailRenderer _trailRenderer;
+      
         private float _maxSpeed;
         private float _friction;
         private float _bounciness;
         private float _mass;
         private float _radius;
         private Vector3 _velocity;
-        [SerializeField] private Color LowVelocityColor = Color.blue;
-        [SerializeField] private Color HighVelocityColor = Color.red;
+     
 
         private readonly Vector3 _zeroVector = new Vector3(0, 0, 0);
         private const float SquareMagnitudeEpsilon = .1f;
@@ -31,7 +30,7 @@ namespace Masomo.Game.Entity
         {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<SphereCollider>();
-            _trailRenderer = GetComponent<TrailRenderer>();
+           
         }
 
         public void Initialize(BallConfig config)
@@ -73,19 +72,9 @@ namespace Masomo.Game.Entity
             UpdateVelocity();
         }
 
-        private void Update()
-        {
-            UpdateTrailColor();
-        }
+  
 
-        private void UpdateTrailColor()
-        {
-            var velocity = _rigidbody.velocity.magnitude;
-            var time = Mathf.Clamp01(velocity / _maxSpeed);
-            var color = Color.Lerp(LowVelocityColor, HighVelocityColor, time);
-            _trailRenderer.startColor = color;
-            _trailRenderer.endColor = color;
-        }
+ 
 
         private void UpdateVelocity()
         {
