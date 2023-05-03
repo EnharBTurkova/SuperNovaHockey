@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a686a47eee2fa44cb0a34b5d86e4d5e, type: 3}
+  m_Name: PlayerBehaviourTree
+  m_EditorClassIdentifier: 
+  _serializedGraph: '{"type":"NodeCanvas.BehaviourTrees.BehaviourTree","nodes":[{"policy":2,"dynamic":true,"_position":{"x":178.4945,"y":384.7764},"$type":"NodeCanvas.BehaviourTrees.Parallel","$id":"0"},{"_condition":{"checkMode":1,"conditions":[{"valueA":{"_type":"System.Enum","_name":"CurrentAnimationType","_targetVariableID":"47148d1d-5be1-4092-8d9c-79fa0347dfb7"},"valueB":{"_type":"Masomo.Game.Entity.AnimationType","_value":{"$content":0,"$type":"Masomo.Game.Entity.AnimationType"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},{"valueA":{"_type":"System.Enum","_name":"CurrentAnimationType","_targetVariableID":"47148d1d-5be1-4092-8d9c-79fa0347dfb7"},"valueB":{"_type":"Masomo.Game.Entity.AnimationType","_value":{"$content":1,"$type":"Masomo.Game.Entity.AnimationType"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"}],"$type":"NodeCanvas.Framework.ConditionList"},"_position":{"x":-8.026123,"y":640.8601},"$type":"NodeCanvas.BehaviourTrees.ConditionalEvaluator","$id":"1"},{"_action":{"$type":"Masomo.ArenaStrikers.Game.BehaviourTree.MoveWithInput"},"_position":{"x":21.07701,"y":855.8033},"$type":"NodeCanvas.BehaviourTrees.ActionNode","$id":"2"},{"_position":{"x":356.5572,"y":657.4433},"$type":"NodeCanvas.BehaviourTrees.Sequencer","$id":"3"},{"_action":{"StrikeInput":{"_name":"StrikeInput","_targetVariableID":"f01cc823-ac06-40d0-9a89-d8310be9a4c0"},"LastStrikeTime":{"_name":"LastStrikeTime","_targetVariableID":"adddd794-7634-4195-97c2-315e9dcc2153"},"StrikePointer":{"_name":"StrikePointer","_targetVariableID":"0cf75b6d-8382-4085-b4c7-9d3c08116e8a"},"StrikeArrow":{"_name":"StrikeArrow","_targetVariableID":"5095d0ed-036a-4c20-a2cc-e740e4e83992"},"TargetGoalPost":{"_name":"TargetGoalPost","_targetVariableID":"06dd5776-e04f-44c7-aa69-12102965daa0"},"$type":"Masomo.ArenaStrikers.Game.BehaviourTree.CheckStrikeInput"},"_position":{"x":262.5668,"y":852.8894},"$type":"NodeCanvas.BehaviourTrees.ActionNode","$id":"4"},{"_action":{"StrikeInput":{"_name":"StrikeInput","_targetVariableID":"f01cc823-ac06-40d0-9a89-d8310be9a4c0"},"StrikePointer":{"_name":"StrikePointer","_targetVariableID":"0cf75b6d-8382-4085-b4c7-9d3c08116e8a"},"StrikeArrow":{"_name":"StrikeArrow","_targetVariableID":"5095d0ed-036a-4c20-a2cc-e740e4e83992"},"LastStrikeTime":{"_name":"LastStrikeTime","_targetVariableID":"adddd794-7634-4195-97c2-315e9dcc2153"},"$type":"Masomo.ArenaStrikers.Game.BehaviourTree.Strike"},"_position":{"x":433.8367,"y":852.9764},"$type":"NodeCanvas.BehaviourTrees.ActionNode","$id":"5"}],"connections":[{"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.BehaviourTrees.BTConnection"},{"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"3"},"$type":"NodeCanvas.BehaviourTrees.BTConnection"},{"_sourceNode":{"$ref":"1"},"_targetNode":{"$ref":"2"},"$type":"NodeCanvas.BehaviourTrees.BTConnection"},{"_sourceNode":{"$ref":"3"},"_targetNode":{"$ref":"4"},"$type":"NodeCanvas.BehaviourTrees.BTConnection"},{"_sourceNode":{"$ref":"3"},"_targetNode":{"$ref":"5"},"$type":"NodeCanvas.BehaviourTrees.BTConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}},"derivedData":{"repeat":true,"$type":"NodeCanvas.BehaviourTrees.BehaviourTree+DerivedSerializationData"}}'
+  _objectReferences: []
+  _graphSource:
+    _version: 3.26
+    _category: 
+    _comments: 
+    _translation: {x: 260.08917, y: -243.87508}
+    _zoomFactor: 1
+  _haltSerialization: 0
