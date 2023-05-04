@@ -7,14 +7,17 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] ParticleSystem particle;
     [SerializeField] Transform particleLocation;
+    [SerializeField] GameObject SelectionRing;
     public float MoveSpeed = 5.0f;
     public float KickPower = 10f;
+    public Transform BallLocation;
 
     private Rigidbody rb;
     private float horizontalInput;
     private float verticalInput;
     private Animator anim;
     private bool canShoot;
+    Vector3 moveDirection;
 
     [SerializeField] GameObject Ball;
     void Start()
@@ -28,7 +31,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = ControlFreak2.CF2Input.GetAxis("Horizontal");
         verticalInput = ControlFreak2.CF2Input.GetAxis("Vertical");
     
-        Vector3 moveDirection = new Vector3(-verticalInput, 0, horizontalInput); // Changed to 0f for Y-axis movement
+         moveDirection = new Vector3(-verticalInput, 0, horizontalInput); // Changed to 0f for Y-axis movement
         rb.velocity = MoveSpeed * moveDirection * Time.deltaTime * 1000000;
 
         if(moveDirection != Vector3.zero)
@@ -38,7 +41,7 @@ public class PlayerController : MonoBehaviour
         }
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, 30);
         anim.SetFloat("Speed", rb.velocity.magnitude/5);
-        if(canShoot == true || Ball.GetComponent<Ball>().StickPlayer)
+        if(canShoot == true || Ball.GetComponent<Ball>().GetBallLocation() == BallLocation)
         {
           
             if (Input.GetKeyDown(KeyCode.Space))
@@ -74,6 +77,14 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void SelectionRingShow()
+    {
+        SelectionRing.SetActive(true);
+    }
+    public void SelectionRingHide()
+    {
+        SelectionRing.SetActive(false);
+    }
     IEnumerator Shoot()
     {
         yield return new WaitForSeconds(.1f);

@@ -11,7 +11,7 @@ using Masomo.ArenaStrikers.Config;
     public class Ball : MonoBehaviour
     {
 
-        [SerializeField] Transform transformplayer;
+        [SerializeField] Transform Player;
         [SerializeField] Transform playerBallPosition;
         [SerializeField] BallConfig config;
         [SerializeField] ParticleSystem SpawnParticle;
@@ -56,7 +56,7 @@ using Masomo.ArenaStrikers.Config;
     {
         if (!StickPlayer)
         {
-            float distancePlayer = Vector3.Distance(transformplayer.position, transform.position);
+            float distancePlayer = Vector3.Distance(Player.position, transform.position);
             if (distancePlayer < 5f)
             {
                 StickPlayer = true;
@@ -64,15 +64,36 @@ using Masomo.ArenaStrikers.Config;
         }
         else
         {
-            Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
-            float speed = Vector2.Distance(currentLocation, previousLocation) / Time.deltaTime;
-            transform.position = playerBallPosition.position;
-            transform.Rotate(new Vector3(transformplayer.right.x, 0, transformplayer.right.z),speed,Space.World);
-            previousLocation = currentLocation;
+            Dribble();
 
         }
        
 
+    }
+    public void Dribble()
+    {
+
+        Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
+        float speed = Vector2.Distance(currentLocation, previousLocation) / Time.deltaTime;
+        transform.position = playerBallPosition.position;
+        transform.Rotate(new Vector3(Player.right.x, 0, Player.right.z), speed, Space.World);
+        previousLocation = currentLocation;
+
+    }
+    public void SetPlayer(Transform go)
+    {
+        Player = go;
+    }
+    public void SetPlayerBallPosition(Transform pos)
+    {
+        playerBallPosition = pos;
+
+     
+
+    }
+    public Transform GetBallLocation()
+    {
+        return playerBallPosition;
     }
     private void LateUpdate()
     {

@@ -94,12 +94,16 @@ public class GameManager : MonoBehaviour
             if (PlayerTeam[i] != closestPlayer)
             {
                 PlayerTeam[i].GetComponent<PlayerController>().enabled = false;
+                PlayerTeam[i].GetComponent<PlayerController>().SelectionRingHide();
                 PlayerTeam[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
                 PlayerTeam[i].GetComponent<Animator>().SetFloat("Speed", PlayerTeam[i].GetComponent<Rigidbody>().velocity.magnitude);
             }
         }
         Debug.Log(closestPlayer.name);
+        Ball.GetComponent<Ball>().SetPlayerBallPosition(closestPlayer.GetComponent<PlayerController>().BallLocation);
+        Ball.GetComponent<Ball>().SetPlayer(closestPlayer.transform);
         closestPlayer.GetComponent<PlayerController>().enabled = true ;
+        closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
     }
     void RestartGame()
     {
@@ -140,17 +144,17 @@ public class GameManager : MonoBehaviour
 
         if (HomeScore > AwayScore)
         {
-            FinalScore.text =  Home + " - " + Away;
+            FinalScore.text = HomeScore + " - " + AwayScore;
             ResultText.text = "You Won";
         }
         else if (AwayScore > HomeScore)
         {
-            FinalScore.text =  Home + " - " + Away;
+            FinalScore.text = HomeScore + " - " + AwayScore;
             ResultText.text = "You Lost";
         }
         else
         {
-            FinalScore.text =  Home + " - " + Away;
+            FinalScore.text = HomeScore + " - " + AwayScore;
             ResultText.text = "Draw";
         }
     }
