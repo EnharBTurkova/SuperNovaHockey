@@ -33,7 +33,7 @@ using Masomo.ArenaStrikers.Config;
         private readonly Vector3 _zeroVector = new Vector3(0, 0, 0);
         private const float SquareMagnitudeEpsilon = .1f;
         private const string ReflectableTag = "Reflectable";
-        
+    private Vector3 lastvelocity;
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
@@ -71,10 +71,16 @@ using Masomo.ArenaStrikers.Config;
             previousLocation = currentLocation;
 
         }
+       
+
+    }
+    private void LateUpdate()
+    {
+        lastvelocity = _rigidbody.velocity;
     }
 
-    
-        public IEnumerator Show()
+
+    public IEnumerator Show()
         {
             this.GetComponent<Rigidbody>().velocity = Vector3.zero;
             this.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -86,19 +92,24 @@ using Masomo.ArenaStrikers.Config;
 
        public IEnumerator Hide( GameObject goal,float wait)
         {
-        this.GetComponent<MeshRenderer>().enabled = false;
+            this.GetComponent<MeshRenderer>().enabled = false;
             yield return new WaitForSeconds(wait);
-        this.GetComponent<MeshRenderer>().enabled = true;
-        GameManager.instance.Score(goal);
+            this.GetComponent<MeshRenderer>().enabled = true;
+            GameManager.instance.Score(goal);
             gameObject.SetActive(false);
         }
         
         private void Reflect(Collision collision)
         {
-            var normal = collision.contacts[0].normal;
-            _velocity = Vector3.Reflect(_rigidbody.velocity.normalized, normal) * _bounciness;
+        var normal = collision.contacts[0].normal;
+        Debug.Log(lastvelocity);
+        _velocity = Vector3.Reflect(lastvelocity, normal);
+       
+        _velocity.y = 0f;
+        _rigidbody.velocity = _velocity;
+        _rigidbody.angularVelocity = _zeroVector;
 
-        }
+    }
 
 
     private void OnTriggerEnter(Collider other)
@@ -107,7 +118,6 @@ using Masomo.ArenaStrikers.Config;
         {
             GoalParticle.transform.position = transform.position;
             GoalParticle.Play();
-
             StartCoroutine(Hide(other.gameObject,GoalParticle.main.duration));
         
         }
@@ -119,10 +129,11 @@ using Masomo.ArenaStrikers.Config;
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
+           
+
+            Reflect(collision);
          
-            var speed = _rigidbody.velocity.magnitude;
-            var direction = Vector3.Reflect(_rigidbody.velocity, collision.contacts[0].normal);
-            _rigidbody.velocity = direction;
+            
          
         }
     }

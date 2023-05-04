@@ -12,10 +12,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text AwayScoreText;
     [SerializeField] Text RespawnText;
     [SerializeField] Text FinalScore;
+    [SerializeField] Text ResultText;
+    
   
     [Header("Game")]
-    [SerializeField] GameObject Player;
-    [SerializeField] GameObject Enemy;
     [SerializeField] GameObject Ball;
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] Transform BallSpawnPoint;
@@ -116,15 +116,18 @@ public class GameManager : MonoBehaviour
 
         if (HomeScore > AwayScore)
         {
-            FinalScore.text = "You Win " + Home + " - " + Away;
+            FinalScore.text =  Home + " - " + Away;
+            ResultText.text = "You Won";
         }
-        else if (AwayScore < HomeScore)
+        else if (AwayScore > HomeScore)
         {
-            FinalScore.text = "You Lose " + Home + " - " + Away;
+            FinalScore.text =  Home + " - " + Away;
+            ResultText.text = "You Lost";
         }
         else
         {
-            FinalScore.text = "Draw " + Home + " - " + Away;
+            FinalScore.text =  Home + " - " + Away;
+            ResultText.text = "Draw";
         }
     }
 }
