@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] ParticleSystem particle;
+    [SerializeField] Transform particleLocation;
     public float MoveSpeed = 5.0f;
     public float KickPower = 10f;
 
@@ -36,27 +38,50 @@ public class PlayerController : MonoBehaviour
         }
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, 30);
         anim.SetFloat("Speed", rb.velocity.magnitude/5);
-        if(canShoot == true )
+        if(canShoot == true || Ball.GetComponent<Ball>().StickPlayer)
         {
-            var force = transform.position - Ball.transform.position;
-            force.Normalize();
+          
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                //Ball.GetComponent<Rigidbody>().AddForce(-force * KickPower * 10000 * Time.deltaTime);
-                canShoot = false;
+                anim.SetTrigger("Strike");
+                //animation delayed couldn't change animation because it's read only
+                StartCoroutine(Shoot());
                 
             }
-            else if(canShoot)
+           
+        }
+
+        if (rb.velocity.magnitude > 5)
+        {
+          
+            particle.transform.position = particleLocation.position;
+            if (!particle.isPlaying)
             {
-               
-                Vector3 forceVector = -force  * Time.deltaTime;
-               
-               //   Ball.GetComponent<Rigidbody>().AddForce(-force  * 20 * Time.deltaTime);
+                
+                particle.Play();
+
             }
+
+       
+        }
+        else
+        {
+           
+            particle.Stop();
         }
 
 
 
+    }
+
+    IEnumerator Shoot()
+    {
+        yield return new WaitForSeconds(.1f);
+        var force = transform.position - Ball.transform.position;
+        force.Normalize();
+        Ball.GetComponent<Ball>().GetComponent<Ball>().StickPlayer = false;
+        Ball.GetComponent<Rigidbody>().AddForce(-force * KickPower * 10000 * Time.deltaTime);
+        canShoot = false;
     }
     private void OnTriggerEnter(Collider other)
     {

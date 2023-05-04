@@ -7,6 +7,7 @@ TagManager:
   - GoalPost
   - Wall
   - Ball
+  - GoalLine
   layers:
   - Default
   - TransparentFX

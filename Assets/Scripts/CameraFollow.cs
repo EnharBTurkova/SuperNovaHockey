@@ -8,6 +8,10 @@ public class CameraFollow : MonoBehaviour
     public Vector3 offset;
     public float smoothSpeed = 0.125f;
 
+    private void Start()
+    {
+        GetComponent<Camera>().orthographicSize = 60f;
+    }
     void LateUpdate()
     {
         Vector3 desiredPosition = target.position + offset;
