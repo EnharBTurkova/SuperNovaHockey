@@ -102,7 +102,7 @@ using Masomo.ArenaStrikers.Config;
         private void Reflect(Collision collision)
         {
         var normal = collision.contacts[0].normal;
-        Debug.Log(lastvelocity);
+     
         _velocity = Vector3.Reflect(lastvelocity, normal);
        
         _velocity.y = 0f;

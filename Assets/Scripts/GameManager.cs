@@ -17,10 +17,12 @@ public class GameManager : MonoBehaviour
   
     [Header("Game")]
     [SerializeField] GameObject Ball;
+    [SerializeField] GameObject[] PlayerTeam;
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] Transform BallSpawnPoint;
 
     [SerializeField] float RespawnTimer = 3.5f;
+    GameObject closestPlayer;
     private int HomeScore = 0;
     private int AwayScore = 0;
     private float GameTime = 90f;
@@ -51,7 +53,6 @@ public class GameManager : MonoBehaviour
             }
 
             RespawnTimer -= Time.unscaledDeltaTime;
-
             RespawnText.text = ((int)RespawnTimer).ToString();
 
         }
@@ -64,19 +65,42 @@ public class GameManager : MonoBehaviour
         {
             GameTime = 90f;
             RestartGame();
-
             Time.timeScale = 0f;
             EndGame(HomeScore, AwayScore);
             GameOverScreen.SetActive(true);
-
-
-
-
         }
+
+        CheckTheClosestPlayer();
 
     }
 
+    void CheckTheClosestPlayer()
+    {
+        
+        float closest = 1000f;
+        for (int i = 0; i < PlayerTeam.Length; i++)
+        {
+            float DistanceToBall = Vector3.Distance(PlayerTeam[i].transform.position, Ball.transform.position);
+            if (DistanceToBall < closest)
+            {
+                closest = DistanceToBall;
+                closestPlayer = PlayerTeam[i];
+            }
+           
 
+        }
+        for (int i = 0; i < PlayerTeam.Length; i++)
+        {
+            if (PlayerTeam[i] != closestPlayer)
+            {
+                PlayerTeam[i].GetComponent<PlayerController>().enabled = false;
+                PlayerTeam[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
+                PlayerTeam[i].GetComponent<Animator>().SetFloat("Speed", PlayerTeam[i].GetComponent<Rigidbody>().velocity.magnitude);
+            }
+        }
+        Debug.Log(closestPlayer.name);
+        closestPlayer.GetComponent<PlayerController>().enabled = true ;
+    }
     void RestartGame()
     {
 
