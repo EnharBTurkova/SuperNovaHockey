@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [Header("Game")]
     [SerializeField] GameObject Ball;
     [SerializeField] GameObject[] PlayerTeam;
+    
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] Transform BallSpawnPoint;
 
@@ -27,6 +28,9 @@ public class GameManager : MonoBehaviour
     private int AwayScore = 0;
     private float GameTime = 90f;
     private bool isRestart;
+
+   
+
     private void Start()
     {
         instance = this;
@@ -34,12 +38,9 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-
         if (Ball.activeInHierarchy)
         {
-            
             GameTime -= Time.deltaTime;
-
         }
         else
         {
@@ -69,14 +70,11 @@ public class GameManager : MonoBehaviour
             EndGame(HomeScore, AwayScore);
             GameOverScreen.SetActive(true);
         }
-
         CheckTheClosestPlayer();
-
     }
 
     void CheckTheClosestPlayer()
     {
-        
         float closest = 1000f;
         for (int i = 0; i < PlayerTeam.Length; i++)
         {
@@ -86,8 +84,6 @@ public class GameManager : MonoBehaviour
                 closest = DistanceToBall;
                 closestPlayer = PlayerTeam[i];
             }
-           
-
         }
         for (int i = 0; i < PlayerTeam.Length; i++)
         {
@@ -99,7 +95,7 @@ public class GameManager : MonoBehaviour
                 PlayerTeam[i].GetComponent<Animator>().SetFloat("Speed", PlayerTeam[i].GetComponent<Rigidbody>().velocity.magnitude);
             }
         }
-        Debug.Log(closestPlayer.name);
+        
         Ball.GetComponent<Ball>().SetPlayerBallPosition(closestPlayer.GetComponent<PlayerController>().BallLocation);
         Ball.GetComponent<Ball>().SetPlayer(closestPlayer.transform);
         closestPlayer.GetComponent<PlayerController>().enabled = true ;
@@ -109,26 +105,20 @@ public class GameManager : MonoBehaviour
     {
 
         StartCoroutine(Ball.GetComponent<Ball>().Show());
-        
-      
-        
-        //Player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-       // Player.GetComponent<Rigidbody2D>().rotation = 0;
-        //Enemy.GetComponent<EnemyAI>().Attack();
-   
+        for (int i = 0; i < PlayerTeam.Length; i++)
+        {
+            PlayerTeam[i].GetComponent<PlayerController>().enabled = true;
+            PlayerTeam[i].GetComponent<PlayerController>().Restart();
+            PlayerTeam[i].GetComponent<PlayerController>().enabled = false;
+        }
         Ball.SetActive(true);
         Time.timeScale = 1;
 
     }
-
-
     public void Score(GameObject goal)
     {
-        
-        Debug.Log("asd");
         if (goal.name == "Right")
         {
-            Debug.Log("asddwq");
             AwayScore++;
             AwayScoreText.text = "AWAY : "  + AwayScore.ToString() ;
         }
@@ -138,7 +128,6 @@ public class GameManager : MonoBehaviour
             HomeScoreText.text = "HOME : " + HomeScore.ToString();
         }
     }
-
     public void EndGame(int Home, int Away)
     {
 

@@ -19,9 +19,8 @@ using Masomo.ArenaStrikers.Config;
         [SerializeField] Transform BallSpawnPoint;
 
         public bool StickPlayer;
-        Vector3 previousLocation;
-
-
+        private bool RespawnBall;
+        private Vector3 previousLocation;
         private Rigidbody _rigidbody;
         private SphereCollider _collider;
         private float _maxSpeed;
@@ -33,7 +32,7 @@ using Masomo.ArenaStrikers.Config;
         private readonly Vector3 _zeroVector = new Vector3(0, 0, 0);
         private const float SquareMagnitudeEpsilon = .1f;
         private const string ReflectableTag = "Reflectable";
-    private Vector3 lastvelocity;
+        private Vector3 lastvelocity;
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
@@ -52,21 +51,28 @@ using Masomo.ArenaStrikers.Config;
             _collider.radius = _radius;
         }
 
-    private void Update()
-    {
-        if (!StickPlayer)
+        private void FixedUpdate()
         {
-            float distancePlayer = Vector3.Distance(Player.position, transform.position);
-            if (distancePlayer < 5f)
+            if (CheckBallPos())
             {
-                StickPlayer = true;
+                this.gameObject.transform.position = Vector3.zero;
             }
         }
-        else
+        private void Update()
         {
-            Dribble();
+            if (!StickPlayer)
+            {
+                float distancePlayer = Vector3.Distance(Player.position, transform.position);
+                if (distancePlayer < 5f)
+                {
+                    StickPlayer = true;
+                }
+            }
+            else
+            {
+                Dribble();
 
-        }
+            }
        
 
     }
@@ -83,24 +89,34 @@ using Masomo.ArenaStrikers.Config;
     public void SetPlayer(Transform go)
     {
         Player = go;
+      
     }
     public void SetPlayerBallPosition(Transform pos)
     {
         playerBallPosition = pos;
-
-     
-
+       
     }
     public Transform GetBallLocation()
     {
         return playerBallPosition;
     }
+   
     private void LateUpdate()
     {
+
         lastvelocity = _rigidbody.velocity;
     }
 
-
+    private bool CheckBallPos()
+    {
+        bool respawnBall = false;
+        if (this.gameObject.transform.position.z < -50f || this.gameObject.transform.position.z > 50f || this.gameObject.transform.position.x > 80f || this.gameObject.transform.position.x < -80f)
+        {
+            respawnBall = true;
+        }
+        return respawnBall;
+        
+    }
     public IEnumerator Show()
         {
             this.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -124,7 +140,7 @@ using Masomo.ArenaStrikers.Config;
         {
         var normal = collision.contacts[0].normal;
      
-        _velocity = Vector3.Reflect(lastvelocity, normal);
+        _velocity = Vector3.Reflect(lastvelocity, normal)*_bounciness;
        
         _velocity.y = 0f;
         _rigidbody.velocity = _velocity;
