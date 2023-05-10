@@ -4,8 +4,9 @@ using UnityEngine.Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Masomo.ArenaStrikers.Config;
-    
-    [RequireComponent(typeof(Rigidbody))]
+using System.ComponentModel;
+
+[RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
    
     public class Ball : MonoBehaviour
@@ -18,6 +19,7 @@ using Masomo.ArenaStrikers.Config;
         [SerializeField] ParticleSystem GoalParticle;
         [SerializeField] Transform BallSpawnPoint;
 
+        private bool BallOnTheMove;
         public bool StickPlayer;
         private bool RespawnBall;
         private Vector3 previousLocation;
@@ -33,6 +35,7 @@ using Masomo.ArenaStrikers.Config;
         private const float SquareMagnitudeEpsilon = .1f;
         private const string ReflectableTag = "Reflectable";
         private Vector3 lastvelocity;
+        
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
@@ -50,7 +53,7 @@ using Masomo.ArenaStrikers.Config;
             _rigidbody.mass = _mass;
             _collider.radius = _radius;
         }
-
+        
         private void FixedUpdate()
         {
             if (CheckBallPos())
@@ -60,22 +63,46 @@ using Masomo.ArenaStrikers.Config;
         }
         private void Update()
         {
-            if (!StickPlayer)
+            if (!StickPlayer )
+            {
+            if (Player != null)
             {
                 float distancePlayer = Vector3.Distance(Player.position, transform.position);
-                if (distancePlayer < 5f)
+               
+                if (distancePlayer < 5.5f)
                 {
                     StickPlayer = true;
                 }
             }
-            else
+            }
+            else 
             {
                 Dribble();
 
             }
-       
+
+           
+        
 
     }
+
+
+    public bool isBallMoving()
+    {
+        return BallOnTheMove;
+    }
+    private void LateUpdate()
+    {
+       
+        _maxSpeed = SROptions.Current.MaxSpeed;
+        _friction = SROptions.Current.Friction;
+        _bounciness = SROptions.Current.bounciness;
+        _mass = SROptions.Current.Mass;
+        lastvelocity = _rigidbody.velocity;
+    }
+
+    
+    
     public void Dribble()
     {
 
@@ -91,6 +118,19 @@ using Masomo.ArenaStrikers.Config;
         Player = go;
       
     }
+    public GameObject GetPlayer()
+    {
+        if(Player == null)
+        {
+            return null;
+        }
+        else
+        {
+
+            return Player.gameObject;
+        }
+
+    }
     public void SetPlayerBallPosition(Transform pos)
     {
         playerBallPosition = pos;
@@ -101,16 +141,10 @@ using Masomo.ArenaStrikers.Config;
         return playerBallPosition;
     }
    
-    private void LateUpdate()
-    {
-
-        lastvelocity = _rigidbody.velocity;
-    }
-
     private bool CheckBallPos()
     {
         bool respawnBall = false;
-        if (this.gameObject.transform.position.z < -50f || this.gameObject.transform.position.z > 50f || this.gameObject.transform.position.x > 80f || this.gameObject.transform.position.x < -80f)
+        if (this.gameObject.transform.position.z < -70f || this.gameObject.transform.position.z > 70f || this.gameObject.transform.position.x > 115f || this.gameObject.transform.position.x < -115f)
         {
             respawnBall = true;
         }
@@ -158,6 +192,18 @@ using Masomo.ArenaStrikers.Config;
             StartCoroutine(Hide(other.gameObject,GoalParticle.main.duration));
         
         }
+        else if (other.gameObject.CompareTag("Player"))
+        {
+            BallOnTheMove = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            BallOnTheMove = true;
+        }
     }
 
 
@@ -175,6 +221,47 @@ using Masomo.ArenaStrikers.Config;
         }
     }
 
+
+
   
+}
+
+public partial class SROptions
+{
+    private float _Bounciness = 0.35f;
+    private float _Friction = 0.05f;
+    private float _MaxSpeed = 50;
+    private float  _Mass= 0.1f;
+   
+    [Category("Bounciness")]
+    [Increment(0.050f)]
+    public float bounciness
+    {
+        get { return _Bounciness; }
+        set { _Bounciness = value; }
+    }
+    [Category("Friction")]
+    [Increment(0.010f)]
+
+    public float Friction
+    {
+        get { return _Friction; }
+        set { _Friction = value; }
+    }
+    [Category("MaxSpeed")]
+    [Increment(1.0f)]
+    public float MaxSpeed
+    {
+        get { return _MaxSpeed; }
+        set { _MaxSpeed = value; }
+    }
+    [Category("Mass")]
+    [Increment(0.10f)]
+    public float Mass
+    {
+        get { return _Mass; }
+        set { _Mass = value; }
+    }
+
 }
 

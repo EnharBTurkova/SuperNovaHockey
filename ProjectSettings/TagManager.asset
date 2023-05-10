@@ -8,6 +8,8 @@ TagManager:
   - Wall
   - Ball
   - GoalLine
+  - Arena
+  - OwnGoalLine
   layers:
   - Default
   - TransparentFX
