@@ -13,9 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject Ball;
 
     
-    public float MoveSpeed = SROptions.Current.MoveSpeed;
-    public float ShootPower = SROptions.Current.ShootPower;
-    public float PassPower = SROptions.Current.PassPower;
+    public float MoveSpeed  ;
+    public float ShootPower ;
+    public float PassPower ;
     public Transform BallLocation;
 
     private Rigidbody rb;
@@ -66,9 +66,10 @@ public class PlayerController : MonoBehaviour
          if (canShoot)
             {
                 canShoot = false;
-                GameObject PlayerToPass = GameManager.instance.SendRaycast();
+                GameObject PlayerToPass = GameManager.instance.PLayerToPass();
 
-            if(PlayerToPass == null )
+ 
+            if(PlayerToPass == null || PlayerToPass.CompareTag("GoalLine") )
             {
                 Shoot();
             }
@@ -93,29 +94,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    private void LateUpdate()
-    {
-        MoveSpeed = SROptions.Current.MoveSpeed;
-        ShootPower = SROptions.Current.ShootPower;
-        PassPower = SROptions.Current.PassPower;
-    }
-    public GameObject GetPLayer()
-    {
-        return this.gameObject;
-    }
-    public void Restart()
-    {     
-        this.transform.position = Spawnpoint.position;
-    }
-    public void SelectionRingShow()
-    {
-        SelectionRing.SetActive(true);
-    }
-    public void SelectionRingHide()
-    {
-        SelectionRing.SetActive(false);
-    }
-
     void Shoot()
     {
      
@@ -138,6 +116,28 @@ public class PlayerController : MonoBehaviour
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
         Ball.GetComponent<Rigidbody>().AddForce(-force.normalized * PassPower * 10000 * Time.fixedDeltaTime);
         canShoot = false;
+    }
+    private void LateUpdate()
+    {
+        MoveSpeed = SROptions.Current.MoveSpeed;
+        ShootPower = SROptions.Current.ShootPower;
+        PassPower = SROptions.Current.PassPower;
+    }
+    public GameObject GetPLayer()
+    {
+        return this.gameObject;
+    }
+    public void Restart()
+    {     
+        this.transform.position = Spawnpoint.position;
+    }
+    public void SelectionRingShow()
+    {
+        SelectionRing.SetActive(true);
+    }
+    public void SelectionRingHide()
+    {
+        SelectionRing.SetActive(false);
     }
     /* public void TakeaShot()
     {
@@ -171,9 +171,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }*/
-
-   
-
 }
 public partial class SROptions
 {

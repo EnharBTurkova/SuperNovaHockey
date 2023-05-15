@@ -68,8 +68,9 @@ using System.ComponentModel;
             if (Player != null)
             {
                 float distancePlayer = Vector3.Distance(Player.position, transform.position);
+
                
-                if (distancePlayer < 5.5f)
+                if (distancePlayer < 8f)
                 {
                     StickPlayer = true;
                 }
@@ -194,7 +195,7 @@ using System.ComponentModel;
         }
         else if (other.gameObject.CompareTag("Player"))
         {
-            BallOnTheMove = false;
+            StickPlayer = true;
         }
     }
 
