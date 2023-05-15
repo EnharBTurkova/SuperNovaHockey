@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         }
 
        
-        if (Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false)
+        if (isShotTaken|| Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false)
         {
             if(closestPlayer.GetComponent<PlayerController>() != null)
             {
@@ -114,10 +114,11 @@ public class GameManager : MonoBehaviour
                 Ball.GetComponent<Ball>().SetPlayer(closestPlayer.transform);
                 closestPlayer.GetComponent<PlayerController>().enabled = true;
                 closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
+              
 
             }
         }
-        
+
         
 
     }
@@ -144,18 +145,18 @@ public class GameManager : MonoBehaviour
                         {
                             if(PlayerTeam[i].transform.position.z < Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
-                                Debug.Log("Sol yukarı doğru oyuncular " + PlayerTeam[i]);
-                               fitness = CalculateAngle(PlayerTeam[i]) * CalculateDistance(PlayerTeam[i]);
-                                Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
+                                //  Debug.Log("Sol yukarı doğru oyuncular " + PlayerTeam[i]);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) /5);
+                                //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
                         else
                         {
                             if (PlayerTeam[i].transform.position.z > Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
-                                Debug.Log("Sağ yukarı doğru oyuncular " + PlayerTeam[i]);
-                                fitness = CalculateAngle(PlayerTeam[i]) * CalculateDistance(PlayerTeam[i]);
-                                Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
+                                //  Debug.Log("Sağ yukarı doğru oyuncular " + PlayerTeam[i]);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                                //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
                     }
@@ -170,19 +171,19 @@ public class GameManager : MonoBehaviour
                         {
                             if (PlayerTeam[i].transform.position.z < Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
-                                Debug.Log("Sol Aşağı doğru oyuncular " + PlayerTeam[i]);
-                                fitness = CalculateAngle(PlayerTeam[i]) * CalculateDistance(PlayerTeam[i]);
-                                Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
+                                //  Debug.Log("Sol Aşağı doğru oyuncular " + PlayerTeam[i]);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                                //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
                         else
                         {
                             if (PlayerTeam[i].transform.position.z > Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
-                                 Debug.Log("Sağ Aşağı doğru oyuncular " + PlayerTeam[i]);
+                                //  Debug.Log("Sağ Aşağı doğru oyuncular " + PlayerTeam[i]);
 
-                                fitness = CalculateAngle(PlayerTeam[i]) * CalculateDistance(PlayerTeam[i]);
-                                Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                               // Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
                     }
@@ -294,6 +295,14 @@ public class GameManager : MonoBehaviour
             FinalScore.text = HomeScore + " - " + AwayScore;
             ResultText.text = "Draw";
         }
+    }
+    public void shoottakentrue()
+    {
+        isShotTaken = true;
+    }
+    public void shoottakenfalse()
+    {
+        isShotTaken = false;
     }
     public bool shottaken()
     {

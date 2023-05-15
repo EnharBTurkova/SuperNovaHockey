@@ -56,31 +56,19 @@ using System.ComponentModel;
         
         private void FixedUpdate()
         {
-            if (CheckBallPos())
+           /* if (CheckBallPos())
             {
                 this.gameObject.transform.position = Vector3.zero;
-            }
+            }*/
         }
         private void Update()
         {
-            if (!StickPlayer )
-            {
-            if (Player != null)
-            {
-                float distancePlayer = Vector3.Distance(Player.position, transform.position);
-
-               
-                if (distancePlayer < 8f)
-                {
-                    StickPlayer = true;
-                }
-            }
-            }
-            else 
-            {
-                Dribble();
-
-            }
+        if (StickPlayer)
+        {
+            Dribble();
+        }
+           
+                  
 
            
         
@@ -90,6 +78,14 @@ using System.ComponentModel;
 
     public bool isBallMoving()
     {
+        if(this.transform.position == GetPlayer().GetComponent<PlayerController>().BallLocation.position)
+        {
+            BallOnTheMove = true;
+        }
+        else
+        {
+            BallOnTheMove = false;
+        }
         return BallOnTheMove;
     }
     private void LateUpdate()
@@ -145,7 +141,7 @@ using System.ComponentModel;
     private bool CheckBallPos()
     {
         bool respawnBall = false;
-        if (this.gameObject.transform.position.z < -70f || this.gameObject.transform.position.z > 70f || this.gameObject.transform.position.x > 115f || this.gameObject.transform.position.x < -115f)
+        if (this.gameObject.transform.position.z < -215f || this.gameObject.transform.position.z > 215f || this.gameObject.transform.position.x > 325f || this.gameObject.transform.position.x < -325f)
         {
             respawnBall = true;
         }
@@ -195,6 +191,9 @@ using System.ComponentModel;
         }
         else if (other.gameObject.CompareTag("Player"))
         {
+            SetPlayer(other.gameObject.transform);
+            SetPlayerBallPosition(other.GetComponent<PlayerController>().BallLocation);
+            GameManager.instance.shoottakenfalse();
             StickPlayer = true;
         }
     }

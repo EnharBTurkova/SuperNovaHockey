@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform Spawnpoint;
     [SerializeField] GameObject Ball;
 
-    
+   
     public float MoveSpeed  ;
     public float ShootPower ;
     public float PassPower ;
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
             isMoved = false;
             canShoot = true;
         }
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, 30);
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, MoveSpeed);
         anim.SetFloat("Speed", rb.velocity.magnitude/5);
 
          if (canShoot)
@@ -96,13 +96,15 @@ public class PlayerController : MonoBehaviour
     }
     void Shoot()
     {
-     
+        GameManager.instance.shoottakentrue();
+
         var force = transform.position - Ball.transform.position;
         force.Normalize();
         Ball.GetComponent<Ball>().GetComponent<Ball>().StickPlayer = false;
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
         Ball.GetComponent<Rigidbody>().AddForce(this.transform.forward.normalized * ShootPower * 10000 * Time.fixedDeltaTime);
         canShoot = false;
+        
     
     
    
@@ -139,42 +141,11 @@ public class PlayerController : MonoBehaviour
     {
         SelectionRing.SetActive(false);
     }
-    /* public void TakeaShot()
-    {
-
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Ball.transform.position - this.transform.position, 15f);
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.name == "Left")
-            {
-                Vector3 force = transform.position - Ball.transform.position;
-                force.Normalize();
-                Ball.gameObject.GetComponent<Rigidbody2D>().AddForce(-force * Power);
-               
-            }
-            else if (hit.collider.name == "Player")
-            {
-                //dribble
-            }
-            else
-            {
-                if (RotateLeft)
-                {
-                    transform.RotateAround(Ball.transform.position, -Vector3.forward, Difficulity * Time.deltaTime);
-
-                }
-                else
-                {
-                    transform.RotateAround(Ball.transform.position, Vector3.forward, Difficulity * Time.deltaTime);
-                }
-
-            }
-        }
-    }*/
+    
 }
 public partial class SROptions
 {
-    private float _MoveSpeed = 6;
+    private float _MoveSpeed = 50;
     private float _PassPower = 4;
     private float _ShootPower = 8;
     [Category("MoveSpeed")]
