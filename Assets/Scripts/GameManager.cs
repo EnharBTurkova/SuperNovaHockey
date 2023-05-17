@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     private float GameTime = 90f;
     private bool isRestart;
     private bool isShotTaken;
-   
+    private Vector3 PassPoint;
 
     private void Start()
     {
@@ -67,13 +67,15 @@ public class GameManager : MonoBehaviour
         if (GameTime <= 0)
         {
             GameTime = 90f;
-            RestartGame();
-            Time.timeScale = 0f;
-            EndGame(HomeScore, AwayScore);
-            GameOverScreen.SetActive(true);
+            //RestartGame();
+           // Time.timeScale = 0f;
+            //EndGame(HomeScore, AwayScore);
+           // GameOverScreen.SetActive(true);
         }
       
             CheckTheClosestPlayer();
+
+
     }
 
     void CheckTheClosestPlayer()
@@ -106,7 +108,7 @@ public class GameManager : MonoBehaviour
         }
 
        
-        if (isShotTaken|| Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false)
+        if (isShotTaken ||Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false)
         {
             if(closestPlayer.GetComponent<PlayerController>() != null)
             {
@@ -114,8 +116,8 @@ public class GameManager : MonoBehaviour
                 Ball.GetComponent<Ball>().SetPlayer(closestPlayer.transform);
                 closestPlayer.GetComponent<PlayerController>().enabled = true;
                 closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
-              
 
+                closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position,Ball.transform.position,SROptions.Current.MoveSpeed*Time.deltaTime);
             }
         }
 
@@ -146,7 +148,7 @@ public class GameManager : MonoBehaviour
                             if(PlayerTeam[i].transform.position.z < Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
                                 //  Debug.Log("Sol yukarı doğru oyuncular " + PlayerTeam[i]);
-                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) /5);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/2);
                                 //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
@@ -155,7 +157,7 @@ public class GameManager : MonoBehaviour
                             if (PlayerTeam[i].transform.position.z > Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
                                 //  Debug.Log("Sağ yukarı doğru oyuncular " + PlayerTeam[i]);
-                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/2);
                                 //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
@@ -172,7 +174,7 @@ public class GameManager : MonoBehaviour
                             if (PlayerTeam[i].transform.position.z < Ball.GetComponent<Ball>().GetPlayer().transform.position.z)
                             {
                                 //  Debug.Log("Sol Aşağı doğru oyuncular " + PlayerTeam[i]);
-                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/2);
                                 //  Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
@@ -182,7 +184,7 @@ public class GameManager : MonoBehaviour
                             {
                                 //  Debug.Log("Sağ Aşağı doğru oyuncular " + PlayerTeam[i]);
 
-                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i]) / 5);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/2);
                                // Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
@@ -202,7 +204,7 @@ public class GameManager : MonoBehaviour
             passplayer = SendRaycast();
         }
      
-        Debug.Log(passplayer);
+        
         return passplayer;
     }
     public float CalculateAngle(GameObject target)
@@ -248,7 +250,6 @@ public class GameManager : MonoBehaviour
         return closestPlayer;
     }
     #endregion
-
     void RestartGame()
     {
         StartCoroutine(Ball.GetComponent<Ball>().Show());
@@ -308,4 +309,17 @@ public class GameManager : MonoBehaviour
     {
         return isShotTaken;
     }
+
+    public void SetPassPoint(Vector3 point)
+    {
+        PassPoint = point;
+    }
+    public Vector3 GetPassPoint()
+    {
+
+        return PassPoint;
+    }
+
+
+
 }

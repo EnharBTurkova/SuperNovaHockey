@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public float PassPower ;
     public Transform BallLocation;
 
+    private Vector3 PassPoint;
     private Rigidbody rb;
     private float horizontalInput;
     private float verticalInput;
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+
                 Pass(PlayerToPass);
             }
     
@@ -111,8 +113,20 @@ public class PlayerController : MonoBehaviour
     }
     void Pass(GameObject PlayerToPass)
     {
-       
-        var force = Ball.GetComponent<Ball>().GetBallLocation().position - PlayerToPass.transform.position;
+        GameManager.instance.shoottakentrue();
+        var force = Vector3.zero;
+
+        if (PlayerToPass.GetComponent<Rigidbody>().velocity != Vector3.zero)
+        {
+            Debug.Log("transform "  +PlayerToPass.transform.position);
+            Debug.Log("transform + forward " + PlayerToPass.transform.position + PlayerToPass.transform.forward);
+             force = Ball.GetComponent<Ball>().GetBallLocation().position - (PlayerToPass.transform.position + PlayerToPass.transform.forward);
+        }
+        else
+        {
+             force = Ball.GetComponent<Ball>().GetBallLocation().position - PlayerToPass.transform.position;
+
+        }
         force.Normalize();
         Ball.GetComponent<Ball>().GetComponent<Ball>().StickPlayer = false;
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -141,14 +155,15 @@ public class PlayerController : MonoBehaviour
     {
         SelectionRing.SetActive(false);
     }
+
     
 }
 public partial class SROptions
 {
-    private float _MoveSpeed = 50;
-    private float _PassPower = 4;
-    private float _ShootPower = 8;
-    [Category("MoveSpeed")]
+    private float _MoveSpeed = 100;
+    private float _PassPower = 8;
+    private float _ShootPower = 12;
+    [Category("Move Speed")]
     public float MoveSpeed
     {
         get { return _MoveSpeed; }

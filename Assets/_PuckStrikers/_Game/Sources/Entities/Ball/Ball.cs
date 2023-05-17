@@ -35,11 +35,13 @@ using System.ComponentModel;
         private const float SquareMagnitudeEpsilon = .1f;
         private const string ReflectableTag = "Reflectable";
         private Vector3 lastvelocity;
-        
+        private   PhysicMaterial BallPyhsic;
+     
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<SphereCollider>();
+            BallPyhsic = _collider.material;
             Initialize(config);
         }
 
@@ -63,19 +65,15 @@ using System.ComponentModel;
         }
         private void Update()
         {
+      
+            _rigidbody.velocity = _rigidbody.velocity / SROptions.Current.Friction;
+   
         if (StickPlayer)
         {
             Dribble();
         }
-           
-                  
-
-           
-        
-
+            _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, _maxSpeed);
     }
-
-
     public bool isBallMoving()
     {
         if(this.transform.position == GetPlayer().GetComponent<PlayerController>().BallLocation.position)
@@ -90,24 +88,23 @@ using System.ComponentModel;
     }
     private void LateUpdate()
     {
-       
+        
+        BallPyhsic.bounciness = SROptions.Current.bounciness;
+  
+        BallPyhsic.dynamicFriction = SROptions.Current.Friction;
         _maxSpeed = SROptions.Current.MaxSpeed;
-        _friction = SROptions.Current.Friction;
-        _bounciness = SROptions.Current.bounciness;
-        _mass = SROptions.Current.Mass;
+        _rigidbody.mass = SROptions.Current.Mass;
+
         lastvelocity = _rigidbody.velocity;
     }
-
-    
-    
     public void Dribble()
     {
 
-        Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
+        /*Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
         float speed = Vector2.Distance(currentLocation, previousLocation) / Time.deltaTime;
-        transform.position = playerBallPosition.position;
         transform.Rotate(new Vector3(Player.right.x, 0, Player.right.z), speed, Space.World);
-        previousLocation = currentLocation;
+        previousLocation = currentLocation;*/
+        transform.position = playerBallPosition.position;
 
     }
     public void SetPlayer(Transform go)
@@ -137,7 +134,6 @@ using System.ComponentModel;
     {
         return playerBallPosition;
     }
-   
     private bool CheckBallPos()
     {
         bool respawnBall = false;
@@ -157,18 +153,16 @@ using System.ComponentModel;
             yield return new WaitForSeconds(SpawnParticle.main.duration);
             gameObject.SetActive(true);
         }
-
-       public IEnumerator Hide( GameObject goal,float wait)
+    public IEnumerator Hide( GameObject goal,float wait)
         {
             this.GetComponent<MeshRenderer>().enabled = false;
             yield return new WaitForSeconds(wait);
             this.GetComponent<MeshRenderer>().enabled = true;
             GameManager.instance.Score(goal);
             gameObject.SetActive(false);
-        }
-        
-        private void Reflect(Collision collision)
-        {
+        }  
+    private void Reflect(Collision collision)
+    {
         var normal = collision.contacts[0].normal;
      
         _velocity = Vector3.Reflect(lastvelocity, normal)*_bounciness;
@@ -178,8 +172,6 @@ using System.ComponentModel;
         _rigidbody.angularVelocity = _zeroVector;
 
     }
-
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("GoalLine"))
@@ -197,7 +189,6 @@ using System.ComponentModel;
             StickPlayer = true;
         }
     }
-
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -205,9 +196,6 @@ using System.ComponentModel;
             BallOnTheMove = true;
         }
     }
-
-
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
@@ -220,18 +208,15 @@ using System.ComponentModel;
          
         }
     }
-
-
-
-  
 }
 
 public partial class SROptions
 {
-    private float _Bounciness = 0.35f;
-    private float _Friction = 0.05f;
-    private float _MaxSpeed = 50;
+    private float _Bounciness = 0.9f;
+    private float _Friction = 1.001f;
+    private float _MaxSpeed = 1000f;
     private float  _Mass= 0.1f;
+   
    
     [Category("Bounciness")]
     [Increment(0.050f)]
@@ -240,8 +225,9 @@ public partial class SROptions
         get { return _Bounciness; }
         set { _Bounciness = value; }
     }
+
     [Category("Friction")]
-    [Increment(0.010f)]
+    [Increment(0.001f)]
 
     public float Friction
     {
