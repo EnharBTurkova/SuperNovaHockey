@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
                 GameObject PlayerToPass = GameManager.instance.PLayerToPass();
 
  
-            if(PlayerToPass == null || PlayerToPass.CompareTag("GoalLine") )
+            if(PlayerToPass.CompareTag("GoalLine") )
             {
                 Shoot();
             }
@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour
     }
     void Shoot()
     {
+        Debug.Log("shoot");
         GameManager.instance.shoottakentrue();
 
         var force = transform.position - Ball.transform.position;
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
  
     void Pass(GameObject PlayerToPass)
     {
+        Debug.Log("Pass");
         GameManager.instance.shoottakentrue();
         var force = Vector3.zero;
 

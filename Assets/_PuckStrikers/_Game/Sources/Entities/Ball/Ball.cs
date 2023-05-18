@@ -101,10 +101,10 @@ using System.ComponentModel;
     public void Dribble()
     {
 
-        Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
+        /*Vector2 currentLocation = new Vector2(transform.position.x, transform.position.z);
         float speed = Vector2.Distance(currentLocation, previousLocation) / Time.deltaTime;
         transform.Rotate(new Vector3(Player.right.x, 0, Player.right.z), speed, Space.World);
-        previousLocation = currentLocation;
+        previousLocation = currentLocation;*/
         transform.position = playerBallPosition.position;
 
     }
@@ -175,7 +175,7 @@ using System.ComponentModel;
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
+  
         if (other.gameObject.CompareTag("GoalLine"))
         {
             GoalParticle.transform.position = transform.position;
@@ -201,7 +201,7 @@ using System.ComponentModel;
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("sad");
+        
         if (collision.gameObject.CompareTag("Wall"))
         {
            

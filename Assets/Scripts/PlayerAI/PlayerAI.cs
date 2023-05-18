@@ -10,6 +10,8 @@ public class PlayerAI : MonoBehaviour
     [SerializeField] GameObject ObjectBall;
     private Ball ball;
     private Vector3 target = Vector3.zero;
+    public bool Gamestart = false;
+   // public float BotSpeed = 2f;
     private void Start()
     {
         ball = ObjectBall.GetComponent<Ball>();
@@ -34,7 +36,7 @@ public class PlayerAI : MonoBehaviour
                     if (RBPosRank(Players[i]))
                     {
                         target= new Vector3(Random.Range(ball.GetPlayer().transform.position.x + 85, ball.GetPlayer().transform.position.x + 150), this.transform.position.y, Random.Range(ball.GetPlayer().transform.position.z + 200, ball.GetPlayer().transform.position.z + 15));
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime );
                     }
                 }
                 else if (Players[i].PlayerPos == PlayerRole.Position.LB)
@@ -43,7 +45,7 @@ public class PlayerAI : MonoBehaviour
                     {
 
                         target = new Vector3(Random.Range(ball.GetPlayer().transform.position.x + 85, ball.GetPlayer().transform.position.x + 150), this.transform.position.y, Random.Range(ball.GetPlayer().transform.position.z - 200, ball.GetPlayer().transform.position.z - 15));
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime );
                     }
                 }
                 else if (Players[i].PlayerPos == PlayerRole.Position.LF)
@@ -52,7 +54,7 @@ public class PlayerAI : MonoBehaviour
                     {
 
                         target = new Vector3(Random.Range(ball.GetPlayer().transform.position.x - 85, ball.GetPlayer().transform.position.x - 150), this.transform.position.y, Random.Range(ball.GetPlayer().transform.position.z - 200, ball.GetPlayer().transform.position.z - 15));
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position,new Vector3 ( Mathf.Clamp(target.x, -250, 250),target.y,Mathf.Clamp(target.z, -200, 205)), Time.deltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position,new Vector3 ( Mathf.Clamp(target.x, -250, 250),target.y,Mathf.Clamp(target.z, -200, 205)), Time.deltaTime );
                     }
                 }
                 else if (Players[i].PlayerPos == PlayerRole.Position.RF)
@@ -60,7 +62,7 @@ public class PlayerAI : MonoBehaviour
                     if (RFPosRank(Players[i]))
                     {
                         target = new Vector3(Random.Range(ball.GetPlayer().transform.position.x - 85, ball.GetPlayer().transform.position.x - 150), this.transform.position.y, Random.Range(ball.GetPlayer().transform.position.z + 200, ball.GetPlayer().transform.position.z + 15));
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, Mathf.Clamp(target.z, -200, 205)), Time.deltaTime );
                     }
                 }
 
@@ -89,10 +91,10 @@ public class PlayerAI : MonoBehaviour
                         target = new Vector3(ball.GetPlayer().transform.position.x + 120, this.transform.position.y, Players[i].transform.position.z);
                         if (!DesignatedRightWingZone(Players[i]))
                         {
-                            target = new Vector3(target.x, target.y, Random.Range(70, 170));
+                            target = new Vector3(target.x, target.y, Random.Range(90, 170));
                         }
 
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y,target.z), Time.smoothDeltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y,target.z), Time.smoothDeltaTime );
 
                         if(GameManager.instance.PLayerToPass() == Players[i])
                         {
@@ -112,10 +114,10 @@ public class PlayerAI : MonoBehaviour
                         target = new Vector3(ball.GetPlayer().transform.position.x + 120, this.transform.position.y, Players[i].transform.position.z);
                         if (!DesignatedLeftWingZone(Players[i]))
                         {
-                            target = new Vector3(target.x, target.y, Random.Range(-170, -170));
+                            target = new Vector3(target.x, target.y, Random.Range(-90, -170));
                         }
 
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
                         if (GameManager.instance.PLayerToPass() == Players[i])
                         {
                             GameManager.instance.SetPassPoint(target);
@@ -125,18 +127,19 @@ public class PlayerAI : MonoBehaviour
 
                     }
                 }
-                else if (Players[i].PlayerPos == PlayerRole.Position.LF)
+                else if (Players[i].PlayerPos == PlayerRole.Position.LF &&(ball.GetPlayer().transform.position.x < -10 || ball.GetPlayer().transform.position.x > 10 || Gamestart))
                 {
+                    Gamestart = true;
                     if (ForPos(Players[i]))
                     {
 
-                        target = new Vector3(ball.GetPlayer().transform.position.x - 120, this.transform.position.y, Players[i].transform.position.z);
+                        target = new Vector3(ball.GetPlayer().transform.position.x - 150, this.transform.position.y, Players[i].transform.position.z);
                         if (!DesignatedLeftWingZone(Players[i]))
                         {
-                            target = new Vector3(target.x, target.y, Random.Range(-170, -70));
+                            target = new Vector3(target.x, target.y, Random.Range(-170, -90));
                         }
 
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
                         if (GameManager.instance.PLayerToPass() == Players[i])
                         {
                             GameManager.instance.SetPassPoint(target);
@@ -146,19 +149,19 @@ public class PlayerAI : MonoBehaviour
 
                     }
                 }
-                else if (Players[i].PlayerPos == PlayerRole.Position.RF)
+                else if (Players[i].PlayerPos == PlayerRole.Position.RF && (ball.GetPlayer().transform.position.x < -10 || ball.GetPlayer().transform.position.x > 10 ||  Gamestart))
                 {
-                  
+                    Gamestart = true;
                     if (ForPos(Players[i]))
                     {
-                        target = new Vector3(ball.GetPlayer().transform.position.x - 120, this.transform.position.y, Players[i].transform.position.z);
+                        target = new Vector3(ball.GetPlayer().transform.position.x - 150, this.transform.position.y, Players[i].transform.position.z);
                        
                         if (!DesignatedRightWingZone(Players[i]))
                         {
-                            target =  new Vector3(target.x, target.y, Random.Range(70, 170));
+                            target =  new Vector3(target.x, target.y, Random.Range(90, 170));
                         }
 
-                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
+                        Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
 
                         if (GameManager.instance.PLayerToPass() == Players[i])
                         {
@@ -201,7 +204,7 @@ public class PlayerAI : MonoBehaviour
         
 
        
-        if (player.GetComponent<PlayerController>().enabled==false &&player.transform.position.x - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x > - 40)
+        if (player.GetComponent<PlayerController>().enabled==false &&player.transform.position.x - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x > -80)
         {
             return true;
         }
@@ -218,7 +221,7 @@ public class PlayerAI : MonoBehaviour
     }
     private bool DefPos(PlayerRole player)
     {
-        if(player.GetComponent<PlayerController>().enabled == false && player.transform.position.x  - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x < 40 )
+        if(player.GetComponent<PlayerController>().enabled == false && player.transform.position.x  - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x < 80 )
         {
             return true;
         }
@@ -248,12 +251,12 @@ public class PlayerAI : MonoBehaviour
 
     private bool DesignatedMidZone(PlayerRole player)
     {
-        //70 -70
-        if (player.transform.position.z > -70)
+        //50 -50
+        if (player.transform.position.z > -50)
         {
             return false;
         }
-        else if (player.transform.position.z < 70)
+        else if (player.transform.position.z < 50)
         {
             return false;
         }
@@ -265,9 +268,9 @@ public class PlayerAI : MonoBehaviour
     }
     private bool DesignatedLeftWingZone(PlayerRole player)
     {
-        //-70 -170
+        //-90 -170
 
-        if (player.transform.position.z > -70)
+        if (player.transform.position.z > -90)
         {
             return false;
         }
@@ -282,8 +285,8 @@ public class PlayerAI : MonoBehaviour
     }
     private bool DesignatedRightWingZone(PlayerRole player)
     {
-        //70 170
-        if (player.transform.position.z < 70)
+        //90 170
+        if (player.transform.position.z < 90)
         {
             return false;
         }
