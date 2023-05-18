@@ -101,6 +101,8 @@ public class PlayerAI : MonoBehaviour
 
 
                     }
+                    
+
                 }
                 else if (Players[i].PlayerPos == PlayerRole.Position.LB)
                 {
@@ -146,6 +148,7 @@ public class PlayerAI : MonoBehaviour
                 }
                 else if (Players[i].PlayerPos == PlayerRole.Position.RF)
                 {
+                  
                     if (ForPos(Players[i]))
                     {
                         target = new Vector3(ball.GetPlayer().transform.position.x - 120, this.transform.position.y, Players[i].transform.position.z);
@@ -195,40 +198,44 @@ public class PlayerAI : MonoBehaviour
     }
     private bool ForPos(PlayerRole player)
     {
-        if (player.transform.position.x  > ball.GetPlayer().GetComponent<PlayerController>().transform.position.x + 40)
+        
+
+       
+        if (player.GetComponent<PlayerController>().enabled==false &&player.transform.position.x - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x > - 40)
         {
             return true;
         }
 
-        else if (ball.GetPlayer().GetComponent<PlayerController>().transform.position.x-player.transform.position.x < 50)
-        {
-            return false;
-        }
-        else
+        else if (player.GetComponent<PlayerController>().enabled == false && player.transform.position.x-ball.GetPlayer().GetComponent<PlayerController>().transform.position.x < -120)
         {
             return true;
         }
+        else
+        {
+            return false;
+        }
+        
     }
     private bool DefPos(PlayerRole player)
     {
-        if(player.transform.position.x  < ball.GetPlayer().GetComponent<PlayerController>().transform.position.x )
+        if(player.GetComponent<PlayerController>().enabled == false && player.transform.position.x  - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x < 40 )
         {
             return true;
         }
      
-        else if (player.transform.position.x-ball.GetPlayer().GetComponent<PlayerController>().transform.position.x  < 60   )
+        else if (player.GetComponent<PlayerController>().enabled == false && player.transform.position.x-ball.GetPlayer().GetComponent<PlayerController>().transform.position.x  > 120   )
         {
 
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
     private bool MidPos(PlayerRole player)
     {
-        if (Mathf.Abs(ball.GetPlayer().transform.position.x-player.transform.position.x)<90)
+        if ( Mathf.Abs(ball.GetPlayer().transform.position.x-player.transform.position.x)<90)
         {
             return false;
         }

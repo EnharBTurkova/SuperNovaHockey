@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
     
    
     }
+ 
     void Pass(GameObject PlayerToPass)
     {
         GameManager.instance.shoottakentrue();
