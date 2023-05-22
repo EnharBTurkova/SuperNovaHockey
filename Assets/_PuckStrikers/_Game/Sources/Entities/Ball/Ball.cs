@@ -19,7 +19,6 @@ using System.ComponentModel;
         [SerializeField] ParticleSystem GoalParticle;
         [SerializeField] Transform BallSpawnPoint;
 
-        private bool BallOnTheMove;
         public bool StickPlayer;
         private bool RespawnBall;
         private Vector3 previousLocation;
@@ -75,18 +74,7 @@ using System.ComponentModel;
         }
             _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, _maxSpeed);
     }
-    public bool isBallMoving()
-    {
-        if(this.transform.position == GetPlayer().GetComponent<PlayerController>().BallLocation.position)
-        {
-            BallOnTheMove = true;
-        }
-        else
-        {
-            BallOnTheMove = false;
-        }
-        return BallOnTheMove;
-    }
+
     private void LateUpdate()
     {
         
@@ -189,14 +177,6 @@ using System.ComponentModel;
             SetPlayerBallPosition(other.GetComponent<PlayerController>().BallLocation);
             GameManager.instance.shoottakenfalse();
             StickPlayer = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        Debug.Log(other.tag);
-        if (other.gameObject.CompareTag("Player"))
-        {
-            BallOnTheMove = true;
         }
     }
     private void OnCollisionEnter(Collision collision)

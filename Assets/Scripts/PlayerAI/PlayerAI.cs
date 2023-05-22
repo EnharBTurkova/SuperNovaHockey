@@ -22,6 +22,7 @@ public class PlayerAI : MonoBehaviour
 
     private void Update()
     {
+        
         //CheckOtherPosWithRank();
             CheckOtherPos();
     }
@@ -96,10 +97,7 @@ public class PlayerAI : MonoBehaviour
 
                         Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y,target.z), Time.smoothDeltaTime );
 
-                        if(GameManager.instance.PLayerToPass() == Players[i])
-                        {
-                            GameManager.instance.SetPassPoint(target);
-                        }
+                    
 
 
                     }
@@ -118,10 +116,7 @@ public class PlayerAI : MonoBehaviour
                         }
 
                         Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
-                        if (GameManager.instance.PLayerToPass() == Players[i])
-                        {
-                            GameManager.instance.SetPassPoint(target);
-                        }
+                      
 
 
 
@@ -140,10 +135,7 @@ public class PlayerAI : MonoBehaviour
                         }
 
                         Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
-                        if (GameManager.instance.PLayerToPass() == Players[i])
-                        {
-                            GameManager.instance.SetPassPoint(target);
-                        }
+                     
 
 
 
@@ -163,11 +155,7 @@ public class PlayerAI : MonoBehaviour
 
                         Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime );
 
-                        if (GameManager.instance.PLayerToPass() == Players[i])
-                        {
-                            GameManager.instance.SetPassPoint(target);
-                        }
-
+                     
 
 
                     }
@@ -183,11 +171,7 @@ public class PlayerAI : MonoBehaviour
                             target = new Vector3(target.x, target.y, Random.Range(-70, 70));
                         }
                         Players[i].transform.position = Vector3.Lerp(Players[i].transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.deltaTime/3);
-                        
-                        if (GameManager.instance.PLayerToPass() == Players[i])
-                        {
-                            GameManager.instance.SetPassPoint(target);
-                        }
+                     
 
                     }
 

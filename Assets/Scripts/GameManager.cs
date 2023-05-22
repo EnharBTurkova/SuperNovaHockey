@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text RespawnText;
     [SerializeField] Text FinalScore;
     [SerializeField] Text ResultText;
-    [SerializeField] PlayerAI ai;
-  
+    [SerializeField] BaseStateMachine[] AIReset;
+   
+
     [Header("Game")]
     [SerializeField] GameObject Ball;
     [SerializeField] GameObject[] PlayerTeam;
@@ -272,7 +273,12 @@ public class GameManager : MonoBehaviour
     #endregion
     void RestartGame()
     {
-        ai.Gamestart = false;
+        for (int i = 0; i < AIReset.Length; i++)
+        {
+            AIReset[i].Gamestart = false;
+        }
+        
+ 
         StartCoroutine(Ball.GetComponent<Ball>().Show());
         for (int i = 0; i < PlayerTeam.Length; i++)
         {
@@ -325,18 +331,5 @@ public class GameManager : MonoBehaviour
     public void shoottakenfalse()
     {
         isShotTaken = false;
-    }
-    public bool shottaken()
-    {
-        return isShotTaken;
-    }
-    public void SetPassPoint(Vector3 point)
-    {
-        PassPoint = point;
-    }
-    public Vector3 GetPassPoint()
-    {
-
-        return PassPoint;
     }
 }

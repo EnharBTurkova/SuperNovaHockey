@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform Spawnpoint;
     [SerializeField] GameObject Ball;
 
-   
+    public float PassThreshold;
     public float MoveSpeed  ;
     public float ShootPower ;
     public float PassPower ;
@@ -26,8 +26,9 @@ public class PlayerController : MonoBehaviour
     private bool canShoot;
     private Vector3 moveDirection;
     private bool isMoved ;
+    private Touch touch;
 
-  
+
     void Start()
     {
         
@@ -37,30 +38,52 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-     
        
         horizontalInput = ControlFreak2.CF2Input.GetAxis("Horizontal")*100;
         verticalInput = ControlFreak2.CF2Input.GetAxis("Vertical")*100;
         moveDirection = new Vector3(-verticalInput, 0, horizontalInput); // Changed to 0f for Y-axis movement
         rb.velocity = MoveSpeed * moveDirection * Time.deltaTime * 10000;
-       
-        if(moveDirection != Vector3.zero)
+
+        if (Input.GetMouseButtonDown(0))
         {
+            // Player clicked the mouse button
+            Debug.Log("Mouse clicked");
+        }
+        if (moveDirection != Vector3.zero)
+        {
+      
             this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(moveDirection), Time.deltaTime * 40f);
         }
-       
-        if(Mathf.Abs(moveDirection.magnitude)>.01f && !isMoved && Vector3.Distance(BallLocation.position, Ball.transform.position) < 0.8f)
-        {
-            
 
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+           
+            if (touch.phase == TouchPhase.Began && !isMoved)
+            {
+                    isMoved = true;
+            }
+            if (isMoved && touch.phase == TouchPhase.Ended && Vector3.Distance(Ball.transform.position,Ball.GetComponent<Ball>().GetPlayer().transform.position) < 20)
+            {
+
+                isMoved = false;
+                canShoot = true;
+            }
+          
+            
+        }
+#if UNITY_EDITOR
+        if ((Mathf.Abs(moveDirection.magnitude) > Vector3.zero.magnitude || Input.GetMouseButtonDown(0)) && !isMoved)
+        {
             isMoved = true;
         }
-        else if(moveDirection.magnitude <= 0f && isMoved && Vector3.Distance(BallLocation.position, Ball.transform.position) < 0.8f)
-        {
-          
-            isMoved = false;
-            canShoot = true;
-        }
+#endif
+
+
+  
+
+    
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, MoveSpeed);
         anim.SetFloat("Speed", rb.velocity.magnitude/5);
 
@@ -112,7 +135,6 @@ public class PlayerController : MonoBehaviour
     
    
     }
- 
     void Pass(GameObject PlayerToPass)
     {
         Debug.Log("Pass");
@@ -138,13 +160,10 @@ public class PlayerController : MonoBehaviour
     }
     private void LateUpdate()
     {
+        PassThreshold = SROptions.Current.threshold;
         MoveSpeed = SROptions.Current.MoveSpeed;
         ShootPower = SROptions.Current.ShootPower;
         PassPower = SROptions.Current.PassPower;
-    }
-    public GameObject GetPLayer()
-    {
-        return this.gameObject;
     }
     public void Restart()
     {     
@@ -163,9 +182,17 @@ public class PlayerController : MonoBehaviour
 }
 public partial class SROptions
 {
+    private float _PassThreshold = 0.1f;
     private float _MoveSpeed = 100;
     private float _PassPower = 8;
     private float _ShootPower = 12;
+    [Category ("Pass Threshold")]
+    [Increment(0.01f)]
+    public float threshold
+    {
+        get { return _PassThreshold; }
+        set { _PassThreshold = value; }
+    }
     [Category("Move Speed")]
     public float MoveSpeed
     {
