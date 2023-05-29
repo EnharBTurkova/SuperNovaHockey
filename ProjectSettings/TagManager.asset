@@ -10,6 +10,7 @@ TagManager:
   - GoalLine
   - Arena
   - OwnGoalLine
+  - enemy
   layers:
   - Default
   - TransparentFX

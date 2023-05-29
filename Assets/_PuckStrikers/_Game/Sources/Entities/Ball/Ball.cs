@@ -17,8 +17,9 @@ using System.ComponentModel;
         [SerializeField] BallConfig config;
         [SerializeField] ParticleSystem SpawnParticle;
         [SerializeField] ParticleSystem GoalParticle;
+        [SerializeField] ParticleSystem PowerShotParticle;
         [SerializeField] Transform BallSpawnPoint;
-
+        [SerializeField] PowerShot powershot;
         public bool StickPlayer;
         private bool RespawnBall;
         private Vector3 previousLocation;
@@ -57,15 +58,23 @@ using System.ComponentModel;
         
         private void FixedUpdate()
         {
-           /* if (CheckBallPos())
+            if (CheckBallPos())
             {
                 this.gameObject.transform.position = Vector3.zero;
-            }*/
+            }
         }
         private void Update()
         {
       
             _rigidbody.velocity = _rigidbody.velocity / SROptions.Current.Friction;
+            if (powershot.GetCanUse())
+            {
+                PowerShotParticle.gameObject.SetActive(true);
+            }
+            else if(PowerShotParticle.gameObject.activeSelf && !powershot.GetCanUse())
+            {
+                PowerShotParticle.gameObject.SetActive(false);
+            }
 
     
         if (StickPlayer)
@@ -126,7 +135,7 @@ using System.ComponentModel;
     private bool CheckBallPos()
     {
         bool respawnBall = false;
-        if (this.gameObject.transform.position.z < -215f || this.gameObject.transform.position.z > 215f || this.gameObject.transform.position.x > 325f || this.gameObject.transform.position.x < -325f)
+        if (this.gameObject.transform.position.z < -215f || this.gameObject.transform.position.z > 215f || this.gameObject.transform.position.x > 330f || this.gameObject.transform.position.x < -330f)
         {
             respawnBall = true;
         }
@@ -178,6 +187,48 @@ using System.ComponentModel;
             GameManager.instance.shoottakenfalse();
             StickPlayer = true;
         }
+        else if (other.gameObject.CompareTag("enemy"))
+        {
+            SetPlayer(other.gameObject.transform);
+            SetPlayerBallPosition(other.GetComponent<Enemy>().BallLocation);
+            GameManager.instance.shoottakenfalse();
+            StickPlayer = true;
+
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (!StickPlayer)
+        {
+            if (other.gameObject.CompareTag("Player") )
+            {
+                SetPlayer(other.gameObject.transform);
+                SetPlayerBallPosition(other.GetComponent<PlayerController>().BallLocation);
+                GameManager.instance.shoottakenfalse();
+                StickPlayer = true;
+
+            }
+            else if( other.gameObject.CompareTag("enemy"))
+            {
+                SetPlayer(other.gameObject.transform);
+                SetPlayerBallPosition(other.GetComponent<Enemy>().BallLocation);
+                GameManager.instance.shoottakenfalse();
+                StickPlayer = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("enemy"))
+        {
+            SetPlayer(null);
+            SetPlayerBallPosition(null);
+            GameManager.instance.shoottakentrue();
+            StickPlayer = false;
+
+        }
+ 
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -190,6 +241,13 @@ using System.ComponentModel;
          
             
          
+        }
+        if (collision.gameObject.CompareTag("GoalLine"))
+        {
+
+            GoalParticle.transform.position = transform.position;
+            GoalParticle.Play();
+            StartCoroutine(Hide(collision.gameObject, GoalParticle.main.duration));
         }
     }
 }

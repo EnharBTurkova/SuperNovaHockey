@@ -41,17 +41,48 @@ public class AMCStateMachine : BaseStateMachine
     public override void CheckAttackPos()
     {
         GetComponent<PlayerController>().enabled = false;
-        if (GetBackYourPos())
+        if (ball.GetPlayer() != null)
         {
-            target = new Vector3(Random.Range(ball.GetPlayer().transform.position.x - 85, ball.GetPlayer().transform.position.x + 85), this.transform.position.y, Random.Range(-70, 70));
-            if (!GetBackYourSide())
+            if (GetBackYourPos())
             {
-                target = new Vector3(target.x, target.y, Random.Range(-70, 70));
+                target = new Vector3(Random.Range(ball.GetPlayer().transform.position.x - 85, ball.GetPlayer().transform.position.x + 85), this.transform.position.y, Random.Range(-70, 70));
+                if (!GetBackYourSide())
+                {
+                    target = new Vector3(target.x, target.y, Random.Range(-70, 70));
+                }
+                this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.deltaTime / 3);
+
+
             }
-            this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.deltaTime / 3);
-
-
         }
+    }
+    public override bool GetBackYourSide()
+    {
+        //50 -50
+        if (this.transform.position.z > -50)
+        {
+            return false;
+        }
+        else if (this.transform.position.z < 50)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public override bool GetBackYourPos()
+    {
+            if (Mathf.Abs(ball.GetPlayer().transform.position.x - this.transform.position.x) < 90)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        
     }
     public override void SetOnBallState()
     {
@@ -75,34 +106,6 @@ public class AMCStateMachine : BaseStateMachine
         {
             currentState = StrikerState.Attacking;
             // Add code here to handle the behavior when transitioning to the Attacking state for the striker
-        }
-    }
-    public override bool GetBackYourSide()
-    {
-        //50 -50
-        if (this.transform.position.z > -50)
-        {
-            return false;
-        }
-        else if (this.transform.position.z < 50)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    public override bool GetBackYourPos()
-    {
-
-        if (Mathf.Abs(ball.GetPlayer().transform.position.x - this.transform.position.x) < 90)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
         }
     }
 }

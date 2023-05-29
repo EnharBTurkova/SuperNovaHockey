@@ -37,19 +37,22 @@ public class RFStateMachine : BaseStateMachine
     {
        
         GetComponent<PlayerController>().enabled = false;
-        if ((ball.GetPlayer().transform.position.x < -10 || ball.GetPlayer().transform.position.x > 10 || Gamestart))
+        if (ball.GetPlayer() != null)
         {
-            Gamestart = true;
-            if (GetBackYourPos())
+            if ((ball.GetPlayer().transform.position.x < -10 || ball.GetPlayer().transform.position.x > 10 || Gamestart))
             {
-                target = new Vector3(ball.GetPlayer().transform.position.x - 150, this.transform.position.y, this.transform.position.z);
-
-                if (!GetBackYourSide())
+                Gamestart = true;
+                if (GetBackYourPos())
                 {
-                    target = new Vector3(target.x, target.y, Random.Range(90, 170));
-                }
+                    target = new Vector3(ball.GetPlayer().transform.position.x - 150, this.transform.position.y, this.transform.position.z);
 
-                this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
+                    if (!GetBackYourSide())
+                    {
+                        target = new Vector3(target.x, target.y, Random.Range(90, 170));
+                    }
+
+                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
+                }
             }
         }
     }

@@ -71,7 +71,6 @@ public class LFStateMachine : BaseStateMachine
             // Add code here to handle the behavior when transitioning to the Defending state for the striker
         }
     }
-
     public override void SetAttackingState()
     {
         if (currentState != StrikerState.Attacking)
@@ -97,7 +96,7 @@ public class LFStateMachine : BaseStateMachine
     }
     public override bool GetBackYourPos()
     {
-
+        
         if (this.GetComponent<PlayerController>().enabled == false && this.transform.position.x - ball.GetPlayer().GetComponent<PlayerController>().transform.position.x > -80)
         {
             return true;

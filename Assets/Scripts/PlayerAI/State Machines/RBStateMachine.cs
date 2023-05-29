@@ -37,6 +37,10 @@ public class RBStateMachine : BaseStateMachine
     public override void CheckAttackPos()
     {
         GetComponent<PlayerController>().enabled = false;
+        if(ball.GetPlayer() != null)
+        {
+
+       
         target = new Vector3(ball.GetPlayer().transform.position.x + 120, this.transform.position.y, this.transform.position.z);
         if (!GetBackYourSide())
         {
@@ -44,7 +48,7 @@ public class RBStateMachine : BaseStateMachine
         }
 
         this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Mathf.Clamp(target.x, -250, 250), target.y, target.z), Time.smoothDeltaTime);
-
+        }
     }
     public override void SetOnBallState()
     {

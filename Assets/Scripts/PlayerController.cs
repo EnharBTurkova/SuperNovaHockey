@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,14 +12,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject SelectionRing;
     [SerializeField] Transform Spawnpoint;
     [SerializeField] GameObject Ball;
+    [SerializeField] PowerShot powershot;
+   
 
     public float PassThreshold;
     public float MoveSpeed  ;
     public float ShootPower ;
     public float PassPower ;
     public Transform BallLocation;
+    public float PowerShotMultipilier = 5;
 
-    private Vector3 PassPoint;
     private Rigidbody rb;
     private float horizontalInput;
     private float verticalInput;
@@ -43,12 +46,6 @@ public class PlayerController : MonoBehaviour
         verticalInput = ControlFreak2.CF2Input.GetAxis("Vertical")*100;
         moveDirection = new Vector3(-verticalInput, 0, horizontalInput); // Changed to 0f for Y-axis movement
         rb.velocity = MoveSpeed * moveDirection * Time.deltaTime * 10000;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            // Player clicked the mouse button
-            Debug.Log("Mouse clicked");
-        }
         if (moveDirection != Vector3.zero)
         {
       
@@ -59,12 +56,11 @@ public class PlayerController : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-           
             if (touch.phase == TouchPhase.Began && !isMoved)
             {
                     isMoved = true;
             }
-            if (isMoved && touch.phase == TouchPhase.Ended && Vector3.Distance(Ball.transform.position,Ball.GetComponent<Ball>().GetPlayer().transform.position) < 20)
+            if (isMoved && touch.phase == TouchPhase.Ended && Vector3.Distance(Ball.transform.position,Ball.GetComponent<Ball>().GetPlayer().transform.position) < 40)
             {
 
                 isMoved = false;
@@ -93,9 +89,17 @@ public class PlayerController : MonoBehaviour
                 GameObject PlayerToPass = GameManager.instance.PLayerToPass();
 
  
-            if(PlayerToPass.CompareTag("GoalLine") )
+            if(PlayerToPass.CompareTag("GoalLine"))
             {
-                Shoot();
+                if (powershot.GetCanUse())
+                {
+                    PowerShoot();
+                }
+                else
+                {
+                    Shoot();
+
+                }
             }
             else
             {
@@ -119,6 +123,21 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+    void PowerShoot()
+    {
+        Debug.Log("shoot");
+        GameManager.instance.shoottakentrue();
+
+        var force = transform.position - Ball.transform.position;
+        force.Normalize();
+        Ball.GetComponent<Ball>().GetComponent<Ball>().StickPlayer = false;
+        Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Ball.GetComponent<Rigidbody>().AddForce(this.transform.forward.normalized * ShootPower * 10000 * Time.fixedDeltaTime * PowerShotMultipilier);
+        canShoot = false;
+        powershot.SetCanUse(false);
+        powershot.ResetMana();
+      
+    }
     void Shoot()
     {
         Debug.Log("shoot");
@@ -137,6 +156,7 @@ public class PlayerController : MonoBehaviour
     }
     void Pass(GameObject PlayerToPass)
     {
+        
         Debug.Log("Pass");
         GameManager.instance.shoottakentrue();
         var force = Vector3.zero;
@@ -153,10 +173,22 @@ public class PlayerController : MonoBehaviour
 
         }
         force.Normalize();
-        Ball.GetComponent<Ball>().GetComponent<Ball>().StickPlayer = false;
+        Ball.GetComponent<Ball>().StickPlayer = false;
         Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
         Ball.GetComponent<Rigidbody>().AddForce(-force.normalized * PassPower * 10000 * Time.fixedDeltaTime);
+        powershot.IncreaseMana();
         canShoot = false;
+    }
+
+
+    public void Tackle(GameObject TacklePlayer)
+    {
+       
+      Vector3 pushDirection = TacklePlayer.transform.position - transform.position;
+      pushDirection.Normalize();
+      TacklePlayer.GetComponent<Rigidbody>().AddForce(pushDirection * 10, ForceMode.Impulse);
+      Ball.GetComponent<Ball>().StickPlayer = false;
+
     }
     private void LateUpdate()
     {
@@ -177,7 +209,7 @@ public class PlayerController : MonoBehaviour
     {
         SelectionRing.SetActive(false);
     }
-
+  
     
 }
 public partial class SROptions

@@ -78,15 +78,15 @@ public abstract class DynamicTouchControl : TouchControl
 
 	private bool originAnimOn;
 	private float originAnimElapsed;
-		
+
+		public Vector3 mousePosition;
 
 
 
 
-		
 
-	// -----------------
-	public DynamicTouchControl() : base()
+    // -----------------
+    public DynamicTouchControl() : base()
 		{
 		this.touchStateScreen		= new TouchGestureBasicState();
 		this.touchStateWorld		= new TouchGestureBasicState();
@@ -115,9 +115,22 @@ public abstract class DynamicTouchControl : TouchControl
 			
 		}
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0)) // Check for left mouse button click
+            {
+                // Get the position of the mouse click in screen coordinates
+                mousePosition = Input.mousePosition;
 
-	// ------------------
-	public override void ResetControl ()
+                // Print the mouse position to the console
+              
+
+                // Perform additional actions or logic here
+            }
+        }
+
+        // ------------------
+        public override void ResetControl ()
 		{
 		if (this.CanFadeOut() && this.startFadedOut && !CFUtils.editorStopped)
 			this.DynamicFadeOut(false);	
@@ -575,10 +588,14 @@ public abstract class DynamicTouchControl : TouchControl
 					// Add indirect initial offset...
 
 					if (this.touchStartedByRegion)
-						{
-						if (this.indirectInitialVector != Vector2.zero)
-							originPos -= this.NormalizedToWorldOffset(this.indirectInitialVector);
-						}
+                        {
+     
+							if (this.indirectInitialVector != Vector2.zero)
+                            {
+								originPos -= this.NormalizedToWorldOffset(indirectInitialVector);
+							}
+							
+							}
 					else
 						{
 						if (this.directInitialVector != Vector2.zero)
@@ -671,7 +688,8 @@ public abstract class DynamicTouchControl : TouchControl
 		{
 		if (this.touchObj != null)
 			return false;
-	
+
+		
 		this.touchObj = touch;		
 		this.touchObj.AddControl(this);
 

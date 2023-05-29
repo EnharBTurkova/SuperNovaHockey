@@ -11,14 +11,19 @@ public class StateMachineManager : MonoBehaviour
     {
         for (int i = 0; i < Players.Length; i++)
         {
-            if (Players[i].gameObject != ball.GetPlayer())
+            if (ball.GetPlayer()!= null && ball.GetPlayer().GetComponent<PlayerController>()!= null)
             {
-                Players[i].SetAttackingState();
+
+                if (Players[i].gameObject != ball.GetPlayer())
+                {
+                    Players[i].SetAttackingState();
+                }   
+                else
+                {
+                    Players[i].SetOnBallState();
+                }
             }
-            else
-            {
-                Players[i].SetOnBallState();
-            }
+
         }
     }
 }

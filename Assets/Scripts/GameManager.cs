@@ -20,15 +20,18 @@ public class GameManager : MonoBehaviour
     [Header("Game")]
     [SerializeField] GameObject Ball;
     [SerializeField] GameObject[] PlayerTeam;
+    [SerializeField] GameObject[] EnemyTeam;
     [SerializeField] GameObject Goal;
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] Transform BallSpawnPoint;
-
     [SerializeField] float RespawnTimer = 3.5f;
+
+    private bool BallOnEnemy;
     private GameObject closestPlayer;
+    private GameObject closestEnemy;
     private int HomeScore = 0;
     private int AwayScore = 0;
-    private float GameTime = 90f;
+    private float GameTime = 90000f;
     private bool isRestart;
     private bool isShotTaken;
     private Vector3 PassPoint;
@@ -73,9 +76,43 @@ public class GameManager : MonoBehaviour
             //EndGame(HomeScore, AwayScore);
            // GameOverScreen.SetActive(true);
         }
-      
+       
+        if(Ball.GetComponent<Ball>().GetPlayer() != null)
+        {
+            
+            if (Ball.GetComponent<Ball>().GetPlayer().GetComponent<Enemy>() != null)
+            {
+                BallOnEnemy = true;
+            }
+            else
+            {
+                BallOnEnemy = false;
+            }
+        }
+        else
+        {
+            BallOnEnemy = false;
+        }
             CheckTheClosestPlayer();
 
+        CheckClosestEnemy();
+
+        
+    }
+
+    void CheckClosestEnemy()
+    {
+
+        float closest = 1000f;
+        for (int i = 0; i < EnemyTeam.Length; i++)
+        {
+            float DistanceToBall = Vector3.Distance(EnemyTeam[i].transform.position, Ball.transform.position);
+            if (DistanceToBall < closest)
+            {
+                closest = DistanceToBall;
+                closestEnemy = EnemyTeam[i];
+            }
+        }
 
     }
 
@@ -108,20 +145,25 @@ public class GameManager : MonoBehaviour
             }
         }
 
-       
-        if (isShotTaken ||Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false)
+        if (!BallOnEnemy)
         {
-            if(closestPlayer.GetComponent<PlayerController>() != null)
+            if ((isShotTaken || Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false))
             {
-                Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, 100);
-                Ball.GetComponent<Ball>().SetPlayerBallPosition(closestPlayer.GetComponent<PlayerController>().BallLocation);
-                Ball.GetComponent<Ball>().SetPlayer(closestPlayer.transform);
-                closestPlayer.GetComponent<PlayerController>().enabled = true;
-                closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
-
-                closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position,Ball.transform.position,SROptions.Current.MoveSpeed*Time.deltaTime);
-
-              
+                if (closestPlayer.GetComponent<PlayerController>() != null)
+                {
+                    closestPlayer.GetComponent<PlayerController>().enabled = true;
+                    closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
+                    closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, 100);
+                }
+            }
+            
+        }
+        else
+        {
+            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<45f)
+            {
+             
+                closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());
             }
         }
 
@@ -140,7 +182,7 @@ public class GameManager : MonoBehaviour
 
             if (PlayerTeam[i] != Ball.GetComponent<Ball>().GetPlayer())
             {
-                if (Ball.GetComponent<Ball>().GetPlayer().transform.forward.x < 0) // YUKARISI
+                if (Ball.GetComponent<Ball>().GetPlayer().transform.forward.x < 0) // YUKARI
                 {
                     
                 
@@ -193,7 +235,7 @@ public class GameManager : MonoBehaviour
                                // Debug.DrawLine(Ball.GetComponent<Ball>().GetPlayer().transform.position, PlayerTeam[i].transform.position, Color.blue, 100000f);
                                 // Debug.Log("Sağ Aşağı doğru oyuncular " + PlayerTeam[i]);
 
-                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/5);
+                                fitness = CalculateAngle(PlayerTeam[i]) * (CalculateDistance(PlayerTeam[i])/10);
                               // Debug.Log(PlayerTeam[i] + ": Angle " + CalculateAngle(PlayerTeam[i]) + " Distance " + CalculateDistance(PlayerTeam[i]) + " Result : " + fitness);
                             }
                         }
