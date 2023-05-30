@@ -183,11 +183,14 @@ public class PlayerController : MonoBehaviour
 
     public void Tackle(GameObject TacklePlayer)
     {
-       
-      Vector3 pushDirection = TacklePlayer.transform.position - transform.position;
-      pushDirection.Normalize();
-      TacklePlayer.GetComponent<Rigidbody>().AddForce(pushDirection * 10, ForceMode.Impulse);
-      Ball.GetComponent<Ball>().StickPlayer = false;
+        Vector3 randomDirection = Random.insideUnitCircle.normalized;
+        CameraFollow.instance.CameraShaketrue();
+        Vector3 pushDirection = TacklePlayer.transform.position - transform.position;
+        pushDirection.Normalize();
+        TacklePlayer.GetComponent<Rigidbody>().AddForce(pushDirection * 100, ForceMode.Impulse);
+        Ball.GetComponent<Ball>().StickPlayer = false;
+      
+        Ball.transform.position = this.BallLocation.position;
 
     }
     private void LateUpdate()

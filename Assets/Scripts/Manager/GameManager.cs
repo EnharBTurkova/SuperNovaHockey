@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform BallSpawnPoint;
     [SerializeField] float RespawnTimer = 3.5f;
 
+    private float TackleDistance = 30f;
     private bool BallOnEnemy;
     private GameObject closestPlayer;
     private GameObject closestEnemy;
@@ -160,7 +161,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<45f)
+            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<TackleDistance)
             {
              
                 closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());

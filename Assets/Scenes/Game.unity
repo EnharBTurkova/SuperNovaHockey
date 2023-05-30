@@ -12775,6 +12775,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3046e774cdd5347d99dfdfce75aa0c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeDuration: 0.2
+  shakeMagnitude: 0.1
   target: {fileID: 7764955884966809489}
   offset: {x: 0, y: 202.5, z: 0}
   smoothSpeed: 1
@@ -20007,6 +20009,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3046e774cdd5347d99dfdfce75aa0c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeDuration: 0.1
+  shakeMagnitude: 2
   target: {fileID: 7764955884966809489}
   offset: {x: 200, y: 250, z: 0}
   smoothSpeed: 0.05
@@ -43049,7 +43053,7 @@ Rigidbody:
   m_GameObject: {fileID: 2022714397}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 10
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
