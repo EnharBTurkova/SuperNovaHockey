@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform BallSpawnPoint;
     [SerializeField] float RespawnTimer = 3.5f;
 
+    private bool canTackle = true;
+    private float tackleTimer=3f;
     private float TackleDistance = 30f;
     private bool BallOnEnemy;
     private GameObject closestPlayer;
@@ -45,6 +47,15 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        if (tackleTimer <= 0)
+        {
+            canTackle = true;
+        }
+        else
+        {
+            tackleTimer -= Time.deltaTime;
+        }
+        
         if (Ball.activeInHierarchy)
         {
             GameTime -= Time.deltaTime;
@@ -129,6 +140,7 @@ public class GameManager : MonoBehaviour
                 closest = DistanceToBall;
                 closestPlayer = PlayerTeam[i];
             }
+          
         }
         for (int i = 0; i < PlayerTeam.Length; i++)
         {
@@ -152,19 +164,22 @@ public class GameManager : MonoBehaviour
             {
                 if (closestPlayer.GetComponent<PlayerController>() != null)
                 {
+                   // Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, 100);
                     closestPlayer.GetComponent<PlayerController>().enabled = true;
                     closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
-                    closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, 100);
+                    //closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, SROptions.Current.MoveSpeed * Time.deltaTime);
                 }
             }
             
         }
         else
         {
-            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<TackleDistance)
+            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<TackleDistance && canTackle)
             {
-             
-                closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());
+                Debug.Log("tackles");
+                canTackle = false;
+                tackleTimer = 2f;
+               closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());
             }
         }
 
@@ -332,7 +347,18 @@ public class GameManager : MonoBehaviour
                 PlayerTeam[i].GetComponent<PlayerController>().enabled = false;
             }
         }
+        for (int i = 0; i < EnemyTeam.Length; i++)
+        {
+            if (EnemyTeam[i].GetComponent<Enemy>() != null)
+            {
+                
+                EnemyTeam[i].GetComponent<Enemy>().Restart();
+        
+            }
+        }
         Ball.SetActive(true);
+        Ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         Time.timeScale = 1;
     }
     public void Score(GameObject goal)

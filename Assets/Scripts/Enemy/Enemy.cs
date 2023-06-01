@@ -5,14 +5,10 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public Transform BallLocation;
-    void Start()
-    {
-        
-    }
+    public Transform Spawnpoint;
 
-    // Update is called once per frame
-    void Update()
+    public void Restart()
     {
-        
+        this.transform.position= new Vector3(Spawnpoint.position.x,this.transform.position.y,Spawnpoint.position.z);
     }
 }

@@ -175,6 +175,7 @@ using System.ComponentModel;
   
         if (other.gameObject.CompareTag("GoalLine"))
         {
+      
             GoalParticle.transform.position = transform.position;
             GoalParticle.Play();
             StartCoroutine(Hide(other.gameObject,GoalParticle.main.duration));
@@ -194,6 +195,13 @@ using System.ComponentModel;
             GameManager.instance.shoottakenfalse();
             StickPlayer = true;
 
+        }
+        else if (other.gameObject.CompareTag("OwnGoalLine"))
+        {
+            _rigidbody.velocity = Vector3.zero;
+            GoalParticle.transform.position = transform.position;
+            GoalParticle.Play();
+            StartCoroutine(Hide(other.gameObject, GoalParticle.main.duration));
         }
     }
     private void OnTriggerStay(Collider other)
@@ -218,18 +226,7 @@ using System.ComponentModel;
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("enemy"))
-        {
-            SetPlayer(null);
-            SetPlayerBallPosition(null);
-            GameManager.instance.shoottakentrue();
-            StickPlayer = false;
 
-        }
- 
-    }
     private void OnCollisionEnter(Collision collision)
     {
         
@@ -245,6 +242,13 @@ using System.ComponentModel;
         if (collision.gameObject.CompareTag("GoalLine"))
         {
 
+            GoalParticle.transform.position = transform.position;
+            GoalParticle.Play();
+            StartCoroutine(Hide(collision.gameObject, GoalParticle.main.duration));
+        }
+        else if (collision.gameObject.CompareTag("OwnGoalLine"))
+        {
+            _rigidbody.velocity = Vector3.zero;
             GoalParticle.transform.position = transform.position;
             GoalParticle.Play();
             StartCoroutine(Hide(collision.gameObject, GoalParticle.main.duration));
