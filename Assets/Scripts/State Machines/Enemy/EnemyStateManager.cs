@@ -9,9 +9,19 @@ public class EnemyStateManager : MonoBehaviour
     [SerializeField] GameObject goal;
     [SerializeField] Ball ball;
     [SerializeField] float TackleDistance;
+    private float tackleTimer = 3f;
+    private bool canTackle;
 
     private void Update()
     {
+        if (tackleTimer <= 0)
+        {
+            canTackle = true;
+        }
+        else
+        {
+            tackleTimer -= Time.deltaTime;
+        }
         for (int i = 0; i < Players.Length; i++)
         {
            
@@ -125,12 +135,15 @@ public class EnemyStateManager : MonoBehaviour
                         Players[i].SetDefenceDistance(1);
                     }
 
-                    if (Vector3.Distance(ball.GetPlayer().transform.position, Players[i].transform.position) < TackleDistance)
+                    if (Vector3.Distance(ball.GetPlayer().transform.position, Players[i].transform.position) < TackleDistance && canTackle)
                     {
+                        Debug.Log("tackles");
+                        canTackle = false;
+                        tackleTimer = 2f;
                         Players[i].SetDefenceDistance(-10);
                         Players[i].SetTacklePlayer(ball.GetPlayer());
                         Players[i].SetTackleState();
-                        TackleDistance = 30;
+                        TackleDistance = 10;
                     }
                     else
                     {

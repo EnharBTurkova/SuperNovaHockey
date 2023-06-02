@@ -66,7 +66,7 @@ public class StateMachineManager : MonoBehaviour
 
                             if (Vector3.Distance(Players[j].transform.position, ball.transform.position) < closestDistance)
                             {
-                                Debug.Log(Players[j] + "İs the closest");
+                                //Debug.Log(Players[j] + "İs the closest");
                                 Players[j].SetOnBallState();
                                 ClosestPlayer = Players[j].gameObject;
                                 closestDistance = Vector3.Distance(Players[j].transform.position, ball.transform.position);
@@ -77,7 +77,7 @@ public class StateMachineManager : MonoBehaviour
                     //ekstra önlem
                 if (ClosestPlayer != null && Players[i].gameObject != ClosestPlayer)
                 {
-                    Debug.Log(Players[i] + "İnooooo");
+                    //Debug.Log(Players[i] + "İnooooo");
                     Players[i].SetDefendingState();
                 }
             }

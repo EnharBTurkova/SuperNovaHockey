@@ -13,7 +13,7 @@ public class LBStateMachine : BaseStateMachine
     }
     [SerializeField] GameObject targetPlayer;
     private AIPath aipath;
-    private int defenceDistance = 5;
+    private int defenceDistance = 20;
     private Vector3 target = Vector3.zero;
     private StrikerState currentState;
 
@@ -45,17 +45,21 @@ public class LBStateMachine : BaseStateMachine
     }
     public override void Defence()
     {
+        if (Mathf.Abs(targetPlayer.transform.position.x - transform.position.x) > 30)
+        {
 
-        Vector3 DefenceDirection = targetPlayer.transform.position - transform.position;
-        DefenceDirection -= Vector3.one * defenceDistance;
-        DefenceDirection.y = 0f; // Ignore vertical component
-        // Rotate towards the goal target
-        Quaternion targetRotation = Quaternion.LookRotation(DefenceDirection);
-        transform.rotation = targetRotation;
 
-        // Move towards the goal target
-        Vector3 movement = transform.forward * 100 * Time.deltaTime;
-        transform.position += movement;
+            Vector3 DefenceDirection = targetPlayer.transform.position - transform.position;
+            DefenceDirection -= Vector3.one * defenceDistance;
+            DefenceDirection.y = 0f; // Ignore vertical component
+                                     // Rotate towards the goal target
+            Quaternion targetRotation = Quaternion.LookRotation(DefenceDirection);
+            transform.rotation = targetRotation;
+
+            // Move towards the goal target
+            Vector3 movement = transform.forward * 100 * Time.deltaTime;
+            transform.position += movement;
+        }
     }
 
     public override void CheckAttackPos()

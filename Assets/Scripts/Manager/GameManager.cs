@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     private bool canTackle = true;
     private float tackleTimer=3f;
-    private float TackleDistance = 30f;
+    private float TackleDistance = 10f;
     private bool BallOnEnemy;
     private GameObject closestPlayer;
     private GameObject closestEnemy;
@@ -105,83 +105,29 @@ public class GameManager : MonoBehaviour
         {
             BallOnEnemy = false;
         }
-            CheckTheClosestPlayer();
-
-        CheckClosestEnemy();
-
-        
+            CheckTheClosestPlayer();  
     }
 
-    void CheckClosestEnemy()
-    {
 
-        float closest = 1000f;
-        for (int i = 0; i < EnemyTeam.Length; i++)
-        {
-            float DistanceToBall = Vector3.Distance(EnemyTeam[i].transform.position, Ball.transform.position);
-            if (DistanceToBall < closest)
-            {
-                closest = DistanceToBall;
-                closestEnemy = EnemyTeam[i];
-            }
-        }
-
-    }
 
     void CheckTheClosestPlayer()
     {
-        
-        float closest = 1000f;
-        for (int i = 0; i < PlayerTeam.Length; i++)
+        if (isShotTaken)
         {
-            float DistanceToBall = Vector3.Distance(PlayerTeam[i].transform.position, Ball.transform.position);
-            if (DistanceToBall < closest)
-            {
-                closest = DistanceToBall;
-                closestPlayer = PlayerTeam[i];
-            }
-          
-        }
-        for (int i = 0; i < PlayerTeam.Length; i++)
-        {
-            if (PlayerTeam[i] != closestPlayer && PlayerTeam[i] != Ball.GetComponent<Ball>().GetPlayer())
-            {
-                if (PlayerTeam[i].GetComponent<PlayerController>() != null)
-                {
-
-
-                    PlayerTeam[i].GetComponent<PlayerController>().enabled = false;
-                    PlayerTeam[i].GetComponent<PlayerController>().SelectionRingHide();
-                    PlayerTeam[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
-                    PlayerTeam[i].GetComponent<Animator>().SetFloat("Speed", PlayerTeam[i].GetComponent<Rigidbody>().velocity.magnitude);
-                }
-            }
+            Vector3.MoveTowards(PLayerToPass().transform.position, Ball.transform.position, 100);
+            PLayerToPass().transform.position = Vector3.MoveTowards(PLayerToPass().transform.position, Ball.transform.position, SROptions.Current.MoveSpeed * Time.deltaTime);
         }
 
-        if (!BallOnEnemy)
+        if (BallOnEnemy && Ball.GetComponent<Ball>().GetPlayer()!= null)
         {
-            if ((isShotTaken || Vector3.Distance(closestPlayer.transform.position, Ball.transform.position) < 8f || Ball.GetComponent<Ball>().GetPlayer() == null || Ball.GetComponent<Ball>().GetPlayer().GetComponent<PlayerController>().enabled == false))
-            {
-                if (closestPlayer.GetComponent<PlayerController>() != null)
-                {
-                   // Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, 100);
-                    closestPlayer.GetComponent<PlayerController>().enabled = true;
-                    closestPlayer.GetComponent<PlayerController>().SelectionRingShow();
-                    //closestPlayer.transform.position = Vector3.MoveTowards(closestPlayer.transform.position, Ball.transform.position, SROptions.Current.MoveSpeed * Time.deltaTime);
-                }
-            }
-            
-        }
-        else
-        {
-            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position)<TackleDistance && canTackle)
+            if (Vector3.Distance(Ball.GetComponent<Ball>().GetPlayer().transform.position, closestPlayer.transform.position) < TackleDistance && canTackle)
             {
                 Debug.Log("tackles");
                 canTackle = false;
                 tackleTimer = 2f;
-               closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());
+                closestPlayer.GetComponent<PlayerController>().Tackle(Ball.GetComponent<Ball>().GetPlayer());
             }
-        }
+        } 
 
         
 

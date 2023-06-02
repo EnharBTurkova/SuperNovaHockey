@@ -172,7 +172,7 @@ using System.ComponentModel;
     }
     private void OnTriggerEnter(Collider other)
     {
-  
+        Debug.Log(other.gameObject.name);
         if (other.gameObject.CompareTag("GoalLine"))
         {
       
@@ -206,6 +206,7 @@ using System.ComponentModel;
     }
     private void OnTriggerStay(Collider other)
     {
+       
         if (!StickPlayer)
         {
             if (other.gameObject.CompareTag("Player") )
@@ -226,7 +227,18 @@ using System.ComponentModel;
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("enemy"))
+        {
+            SetPlayer(null);
+            SetPlayerBallPosition(null);
+            GameManager.instance.shoottakentrue();
+            StickPlayer = false;
 
+        }
+ 
+    }
     private void OnCollisionEnter(Collision collision)
     {
         
